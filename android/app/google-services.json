@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "41090800972",
+    "project_id": "pitchscore-d15a6",
+    "storage_bucket": "pitchscore-d15a6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:41090800972:android:044cea03ae0e07bac843e9",
+        "android_client_info": {
+          "package_name": "com.example.pitch_score"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPGemAwj_IrVXLoo_caT0I7DqkZqaVNwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
