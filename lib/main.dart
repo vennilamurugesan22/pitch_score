@@ -12,6 +12,25 @@ void main() async {
    Hive.registerAdapter(BallAdapter());
    Hive.registerAdapter(PlayerAdapter());
    Hive.registerAdapter(MatchAdapter());
+
+/// hive write and read tesing 
+  final box = await Hive.openBox<Ball>('test_balls');
+  await box.put('test', Ball(
+    runs: 4,
+    isWicket: false,
+    isWide: false,
+    isNoBall: false,
+    isBye: false,
+    isLegBye: false,
+    batsmanId: 'p1',
+    bowlerId: 'p2',
+    strikerNameBefore: 'p1',
+    nonStrikerNameBefore: 'p3',
+    timestamp: DateTime.now(),
+  ));
+  final retrieved = box.get('test');
+  print('✅ Hive working — runs: ${retrieved?.runs}');
+
   runApp(const MyApp());
 }
 

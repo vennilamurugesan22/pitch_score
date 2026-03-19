@@ -35,6 +35,12 @@ class Ball extends HiveObject {
   @HiveField(9)
   final DateTime timestamp;
 
+  @HiveField(10)
+  final String strikerNameBefore;  // who was batting before this ball
+
+  @HiveField(11)  
+  final String nonStrikerNameBefore; // who was at other end
+
   Ball({
     required this.runs,
     required this.isWicket,
@@ -46,6 +52,8 @@ class Ball extends HiveObject {
     required this.bowlerId,
     this.wicketType,
     required this.timestamp,
+    required this.strikerNameBefore,
+    required this.nonStrikerNameBefore,
   });
 
   // For Firebase — convert to Map
@@ -61,6 +69,8 @@ class Ball extends HiveObject {
       'bowlerId': bowlerId,
       'wicketType': wicketType,
       'timestamp': timestamp.toIso8601String(),
+      'strikerNameBefore': strikerNameBefore,
+      'nonStrikerNameBefore': nonStrikerNameBefore
     };
   }
 
@@ -76,7 +86,9 @@ class Ball extends HiveObject {
       batsmanId: map['batsmanId'],
       bowlerId: map['bowlerId'],
       wicketType: map['wicketType'],
-      timestamp: DateTime.parse(map['timestamp']),
+      timestamp: DateTime.parse(map['timestamp']), 
+      strikerNameBefore: map['strikerNameBefore'], 
+      nonStrikerNameBefore: map['nonStrikerNameBefore'],
     );
   }
 

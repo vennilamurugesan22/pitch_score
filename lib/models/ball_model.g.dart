@@ -27,13 +27,15 @@ class BallAdapter extends TypeAdapter<Ball> {
       bowlerId: fields[7] as String,
       wicketType: fields[8] as String?,
       timestamp: fields[9] as DateTime,
+      strikerNameBefore: fields[10] as String,
+      nonStrikerNameBefore: fields[11] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Ball obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.runs)
       ..writeByte(1)
@@ -53,7 +55,11 @@ class BallAdapter extends TypeAdapter<Ball> {
       ..writeByte(8)
       ..write(obj.wicketType)
       ..writeByte(9)
-      ..write(obj.timestamp);
+      ..write(obj.timestamp)
+      ..writeByte(10)
+      ..write(obj.strikerNameBefore)
+      ..writeByte(11)
+      ..write(obj.nonStrikerNameBefore);
   }
 
   @override
