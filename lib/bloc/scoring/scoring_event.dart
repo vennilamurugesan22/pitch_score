@@ -53,3 +53,31 @@ class SelectBowlerEvent extends ScoringEvent {
 class EndInningsEvent extends ScoringEvent {
   const EndInningsEvent();
 }
+
+
+
+
+// Fired after scorer taps W and fills the wicket popup
+// dismissalType = "caught" / "bowled" / "runout" / "lbw" / "stumped" / "hitwicket"
+// newBatsmanId = player selected from the list to come in next
+class WicketDetailEvent extends ScoringEvent {
+  final String dismissalType;
+  final String newBatsmanId;
+
+  const WicketDetailEvent({
+    required this.dismissalType,
+    required this.newBatsmanId,
+  });
+
+  @override
+  List<Object?> get props => [dismissalType, newBatsmanId];
+}
+
+// In scoring_event.dart
+class NewBowlerSelectedEvent extends ScoringEvent {
+  final String bowlerId;
+  const NewBowlerSelectedEvent(this.bowlerId);
+
+  @override
+  List<Object?> get props => [bowlerId];
+}

@@ -20,99 +20,99 @@ class ScoringBloc extends Bloc<ScoringEvent, ScoringState> {
     on<SelectBatsmanEvent>(_onSelectBatsman);
     on<SelectBowlerEvent>(_onSelectBowler);
     on<EndInningsEvent>(_onEndInnings);
+    // Register in constructor
+    on<WicketDetailEvent>(_onWicketDetail);
+    on<NewBowlerSelectedEvent>(_onNewBowlerSelected);
   }
 
   // ── Handler: AddBallEvent ────────────────────────────────────────
   // This is called every time scorer taps a button
   // event = the Ball object with all delivery details
   // emit = function to push new state to UI
-  void _onAddBall(AddBallEvent event, Emitter<ScoringState> emit) {
-    final ball = event.ball;
+void _onAddBall(AddBallEvent event, Emitter<ScoringState> emit) {
+  final ball = event.ball;
 
-    // Step 1: Add ball to the log
-    // We never modify existing list — create a new list with ball added
-    final newBallLog = [...state.ballLog, ball];
+  // ── Step 1: Add ball to log ──────────────────────────────────────
+  final newBallLog = [...state.ballLog, ball];
 
-    // Step 2: Update runs
-    // Wide and No ball runs go to extras, not total? NO — they go to BOTH
-    // total runs includes everything including extras
-    final newRuns = state.totalRuns + ball.runs;
+  // ── Step 2: Update runs ──────────────────────────────────────────
+  final newRuns = state.totalRuns + ball.runs;
 
-    // Step 3: Update extras
-    // Only wides, no balls, byes, leg byes count as extras
-    int newExtras = state.extras;
-    if (ball.isWide || ball.isNoBall) {
-      newExtras += 1; // the penalty run
+  // ── Step 3: Update extras ────────────────────────────────────────
+  int newExtras = state.extras;
+  if (ball.isWide || ball.isNoBall) newExtras += 1;
+  if (ball.isBye || ball.isLegBye) newExtras += ball.runs;
+
+  // ── Step 4: Update wickets ───────────────────────────────────────
+  int newWickets = state.wickets;
+  if (ball.isWicket) newWickets += 1;
+
+  // ── Step 5: Over count ───────────────────────────────────────────
+  // Wide and No Ball do NOT count in the over
+  int newBallsInOver = state.ballsInCurrentOver;
+  int newOverNumber = state.overNumber;
+  bool overJustCompleted = false;
+
+  if (ball.isLegalDelivery) {
+    newBallsInOver += 1;
+
+    if (newBallsInOver == 6) {
+      // Over complete!
+      newOverNumber += 1;
+      newBallsInOver = 0;
+      overJustCompleted = true;
     }
-    if (ball.isBye || ball.isLegBye) {
-      newExtras += ball.runs; // the runs they ran
-    }
-
-    // Step 4: Update wickets
-    int newWickets = state.wickets;
-    if (ball.isWicket) newWickets += 1;
-
-    // Step 5: Update over count
-    // CRITICAL: Wide and No Ball do NOT count as a ball in the over
-    int newBallsInOver = state.ballsInCurrentOver;
-    int newOverNumber = state.overNumber;
-
-    if (ball.isLegalDelivery) {
-      // Legal delivery = counts in the over
-      newBallsInOver += 1;
-
-      if (newBallsInOver == 6) {
-        // Over is complete!
-        newOverNumber += 1;
-        newBallsInOver = 0;
-        // Note: UI will show over-complete popup to select new bowler
-        // Striker swap happens at end of over (handled below)
-      }
-    }
-
-    // Step 6: Striker swap logic
-    // Rule: if batsmen ran ODD number of runs → they swap ends
-    // Rule: end of over → always swap
-    // Wide/No ball with no runs = no swap
-    String newStriker = state.strikerId;
-    String newNonStriker = state.nonStrikerId;
-
-    final overJustCompleted = ball.isLegalDelivery && newBallsInOver == 0;
-
-    if (!ball.isWicket) {
-      // Only swap if not a wicket (new batsman comes in, that's handled separately)
-      final runsScored = ball.runs;
-      final oddRuns = runsScored % 2 != 0;
-
-      if (oddRuns && !ball.isWide) {
-        // Swap — batsmen crossed while running
-        final temp = newStriker;
-        newStriker = newNonStriker;
-        newNonStriker = temp;
-      }
-
-      // End of over — always swap regardless of runs
-      if (overJustCompleted) {
-        final temp = newStriker;
-        newStriker = newNonStriker;
-        newNonStriker = temp;
-      }
-    }
-
-    // Step 7: Emit the new state
-    // copyWith creates a new state with only changed fields updated
-    emit(state.copyWith(
-      ballLog: newBallLog,
-      totalRuns: newRuns,
-      wickets: newWickets,
-      overNumber: newOverNumber,
-      ballsInCurrentOver: newBallsInOver,
-      extras: newExtras,
-      strikerId: newStriker,
-      nonStrikerId: newNonStriker,
-    ));
   }
 
+  // ── Step 6: Striker swap ─────────────────────────────────────────
+  // We use a simple boolean to track swap
+  // Two swaps = back to same position (cancels out)
+  String newStriker = state.strikerId;
+  String newNonStriker = state.nonStrikerId;
+
+  // Tell UI to show popups if needed
+final needsNewBowler = overJustCompleted;
+final needsNewBatsman = ball.isWicket;
+
+  bool shouldSwap = false;
+
+  if (!ball.isWicket) {
+    // Swap condition 1 — odd runs (and not a wide)
+    // Wide: batsmen didn't actually run — no swap
+    if (!ball.isWide && ball.runs % 2 != 0) {
+      shouldSwap = !shouldSwap; // flip
+    }
+
+    // Swap condition 2 — end of over (always swap)
+    if (overJustCompleted) {
+      shouldSwap = !shouldSwap; // flip again
+    }
+
+    // Example: Ball 6 scores 1 run
+    // Swap 1 → shouldSwap = true  (odd run)
+    // Swap 2 → shouldSwap = false (over complete cancels it)
+    // Result: no swap — same striker faces next over
+    if (shouldSwap) {
+      final temp = newStriker;
+      newStriker = newNonStriker;
+      newNonStriker = temp;
+    }
+  }
+
+  // ── Step 7: Emit new state ───────────────────────────────────────
+  emit(state.copyWith(
+    ballLog: newBallLog,
+    totalRuns: newRuns,
+    wickets: newWickets,
+    overNumber: newOverNumber,
+    ballsInCurrentOver: newBallsInOver,
+    extras: newExtras,
+    strikerId: newStriker,
+    nonStrikerId: newNonStriker,
+    isOverComplete: needsNewBowler,       // UI shows bowler picker
+    isWicketJustFallen: needsNewBatsman,  // UI shows batsman picker
+  ));
+}
   // ── Handler: UndoBallEvent ───────────────────────────────────────
 void _onUndo(UndoBallEvent event, Emitter<ScoringState> emit) {
   // Nothing to undo
@@ -205,5 +205,23 @@ void _onUndo(UndoBallEvent event, Emitter<ScoringState> emit) {
       emit(state.copyWith(isMatchComplete: true));
     }
   }
+
+  void _onWicketDetail(WicketDetailEvent event, Emitter<ScoringState> emit) {
+  // New batsman always comes in at striker's end
+  // The dismissed batsman was the striker
+  // So new batsman replaces striker directly
+  emit(state.copyWith(
+    strikerId: event.newBatsmanId,
+  ));
+}
+
+
+void _onNewBowlerSelected(
+    NewBowlerSelectedEvent event, Emitter<ScoringState> emit) {
+  emit(state.copyWith(
+    currentBowlerId: event.bowlerId,
+    isOverComplete: false, // dismiss the popup
+  ));
+}
 
 }

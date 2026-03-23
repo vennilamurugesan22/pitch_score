@@ -59,6 +59,13 @@ class ScoringState extends Equatable {
   // true = match is finished, show result screen
   final bool isMatchComplete;
 
+
+  // true = over just completed, show select bowler popup
+final bool isOverComplete;
+
+// true = wicket just fell, show select batsman popup  
+final bool isWicketJustFallen;
+
   // ── Constructor with default values ─────────────────────────────
   // Default values = fresh match, nothing happened yet
   const ScoringState({
@@ -74,6 +81,8 @@ class ScoringState extends Equatable {
     this.currentInnings = 1,
     this.firstInningsScore,
     this.isMatchComplete = false,
+    this.isOverComplete = false,
+    this.isWicketJustFallen = false,
   });
 
   // ── Computed properties ─────────────────────────────────────────
@@ -130,6 +139,8 @@ class ScoringState extends Equatable {
     int? currentInnings,
     int? firstInningsScore,
     bool? isMatchComplete,
+    bool? isOverComplete,
+    bool? isWicketJustFallen,
   }) {
     return ScoringState(
       ballLog: ballLog ?? this.ballLog,
@@ -144,6 +155,8 @@ class ScoringState extends Equatable {
       currentInnings: currentInnings ?? this.currentInnings,
       firstInningsScore: firstInningsScore ?? this.firstInningsScore,
       isMatchComplete: isMatchComplete ?? this.isMatchComplete,
+      isOverComplete: isOverComplete ?? this.isOverComplete,
+      isWicketJustFallen: isWicketJustFallen ?? this.isWicketJustFallen,
     );
   }
 
@@ -164,5 +177,7 @@ class ScoringState extends Equatable {
         currentInnings,
         firstInningsScore,
         isMatchComplete,
+        isOverComplete,
+        isWicketJustFallen,
       ];
 }
