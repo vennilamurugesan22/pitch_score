@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pitch_score/models/ball_model.dart';
+import 'package:pitch_score/services/firebase/firebase_match_service.dart';
 import 'scoring_event.dart';
 import 'scoring_state.dart';
 
@@ -9,9 +10,21 @@ import 'scoring_state.dart';
 
 class ScoringBloc extends Bloc<ScoringEvent, ScoringState> {
 
+  // Firebase service instance
+  // ScoringBloc uses this to sync every ball
+  final FirebaseMatchService _firebaseService = FirebaseMatchService();
+
+   // Match code — set when match starts in live mode
+  // Empty string = offline mode, no Firebase sync
+  final String matchCode;
+  final bool isLiveMode;
+
   // super(const ScoringState()) = set the initial state
   // When match starts, everything is 0 / empty
-  ScoringBloc() : super(const ScoringState()) {
+    ScoringBloc({
+    required this.matchCode,
+    required this.isLiveMode,
+  }) : super(const ScoringState()) {
 
     // Register each event with its handler function
     // Think of this as: "when THIS event comes in, run THIS function"
@@ -112,6 +125,20 @@ final needsNewBatsman = ball.isWicket;
     isOverComplete: needsNewBowler,       // UI shows bowler picker
     isWicketJustFallen: needsNewBatsman,  // UI shows batsman picker
   ));
+
+  // ── Firebase sync ────────────────────────────────────────────────
+  // Only sync if live mode is on
+  // Fire and forget — don't await, don't block the UI
+  // Even if Firebase fails, scoring continues perfectly
+  if (isLiveMode && matchCode.isNotEmpty) {
+    _firebaseService.syncBall(
+      matchCode: matchCode,
+      ball: ball,
+      state: state, // new state after emit
+    );
+  }
+
+  
 }
   // ── Handler: UndoBallEvent ───────────────────────────────────────
 void _onUndo(UndoBallEvent event, Emitter<ScoringState> emit) {

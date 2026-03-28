@@ -66,6 +66,8 @@ final bool isOverComplete;
 // true = wicket just fell, show select batsman popup  
 final bool isWicketJustFallen;
 
+final int totalOvers; 
+
   // ── Constructor with default values ─────────────────────────────
   // Default values = fresh match, nothing happened yet
   const ScoringState({
@@ -83,6 +85,7 @@ final bool isWicketJustFallen;
     this.isMatchComplete = false,
     this.isOverComplete = false,
     this.isWicketJustFallen = false,
+    this.totalOvers = 6,
   });
 
   // ── Computed properties ─────────────────────────────────────────
@@ -105,21 +108,127 @@ final bool isWicketJustFallen;
 
   // Required Run Rate = how fast Team 2 needs to score to win
   // Only meaningful in 2nd innings
-  double get requiredRunRate {
-    if (currentInnings != 2 || firstInningsScore == null) return 0.0;
-    final runsNeeded = firstInningsScore! + 1 - totalRuns;
-    // total balls in match - balls already bowled
-    final ballsBowled = (overNumber * 6) + ballsInCurrentOver;
-    // We need totalOvers to calculate this properly
-    // Will be passed in when we build the full logic — placeholder for now
-    return runsNeeded.toDouble();
-  }
+double get requiredRunRate {
+  if (currentInnings != 2 || firstInningsScore == null) return 0.0;
+  
+  final runsNeeded = firstInningsScore! + 1 - totalRuns;
+  final ballsBowled = (overNumber * 6) + ballsInCurrentOver;
+  final ballsRemaining = (totalOvers * 6) - ballsBowled;
+  
+  // Guard: no balls left
+  if (ballsRemaining <= 0) return 0.0;
+  
+  // RRR = runs needed per over remaining
+  return runsNeeded / (ballsRemaining / 6);
+}
 
   // Runs needed to win — shown in 2nd innings
-  int get runsNeeded {
-    if (currentInnings != 2 || firstInningsScore == null) return 0;
-    return firstInningsScore! + 1 - totalRuns;
+int get runsNeeded {
+  if (currentInnings != 2 || firstInningsScore == null) return 0;
+  return (firstInningsScore! + 1) - totalRuns;
+}
+
+// Balls remaining in the match
+int get ballsRemaining {
+  if (currentInnings != 2) return 0;
+  final ballsBowled = (overNumber * 6) + ballsInCurrentOver;
+  return (totalOvers * 6) - ballsBowled;
+}
+
+// Batsman stats — computed from ball log
+// Pass batsmanId to get that specific batsman's stats
+int batsmanRuns(String batsmanId) {
+  return ballLog
+      .where((b) => b.batsmanId == batsmanId && b.isBatsmanRun)
+      .fold(0, (sum, b) => sum + b.runs);
+}
+
+int batsmanBallsFaced(String batsmanId) {
+  // Only legal deliveries count as balls faced
+  // Wide does NOT count as ball faced by batsman
+  return ballLog
+      .where((b) => b.batsmanId == batsmanId && !b.isWide)
+      .length;
+}
+
+int batsmanFours(String batsmanId) {
+  return ballLog
+      .where((b) => b.batsmanId == batsmanId && b.runs == 4 && !b.isWide)
+      .length;
+}
+
+int batsmanSixes(String batsmanId) {
+  return ballLog
+      .where((b) => b.batsmanId == batsmanId && b.runs == 6)
+      .length;
+}
+
+double batsmanStrikeRate(String batsmanId) {
+  final balls = batsmanBallsFaced(batsmanId);
+  if (balls == 0) return 0.0;
+  return (batsmanRuns(batsmanId) * 100) / balls;
+}
+
+// Bowler stats
+double bowlerOvers(String bowlerId) {
+  final legalBalls = ballLog
+      .where((b) => b.bowlerId == bowlerId && b.isLegalDelivery)
+      .length;
+  final overs = legalBalls ~/ 6;
+  final remainingBalls = legalBalls % 6;
+  // Returns as double e.g. 3.4 means 3 overs 4 balls
+  return overs + (remainingBalls / 10);
+}
+
+int bowlerRunsGiven(String bowlerId) {
+  return ballLog
+      .where((b) => b.bowlerId == bowlerId)
+      .fold(0, (sum, b) => sum + b.runs);
+}
+
+int bowlerWickets(String bowlerId) {
+  return ballLog
+      .where((b) => b.bowlerId == bowlerId && b.isWicket)
+      .length;
+}
+
+double bowlerEconomy(String bowlerId) {
+  final legalBalls = ballLog
+      .where((b) => b.bowlerId == bowlerId && b.isLegalDelivery)
+      .length;
+  if (legalBalls == 0) return 0.0;
+  return bowlerRunsGiven(bowlerId) / (legalBalls / 6);
+}
+
+// Partnership — runs scored since last wicket
+int get partnershipRuns {
+  // Find the last wicket ball index
+  int lastWicketIndex = -1;
+  for (int i = ballLog.length - 1; i >= 0; i--) {
+    if (ballLog[i].isWicket) {
+      lastWicketIndex = i;
+      break;
+    }
   }
+  // Sum all runs after that wicket
+  return ballLog
+      .skip(lastWicketIndex + 1)
+      .fold(0, (sum, b) => sum + b.runs);
+}
+
+int get partnershipBalls {
+  int lastWicketIndex = -1;
+  for (int i = ballLog.length - 1; i >= 0; i--) {
+    if (ballLog[i].isWicket) {
+      lastWicketIndex = i;
+      break;
+    }
+  }
+  return ballLog
+      .skip(lastWicketIndex + 1)
+      .where((b) => b.isLegalDelivery)
+      .length;
+}
 
   // ── copyWith ────────────────────────────────────────────────────
   // In Flutter BLoC, state is IMMUTABLE — you never modify existing state
@@ -141,6 +250,7 @@ final bool isWicketJustFallen;
     bool? isMatchComplete,
     bool? isOverComplete,
     bool? isWicketJustFallen,
+    int? totalOvers,
   }) {
     return ScoringState(
       ballLog: ballLog ?? this.ballLog,
@@ -157,6 +267,7 @@ final bool isWicketJustFallen;
       isMatchComplete: isMatchComplete ?? this.isMatchComplete,
       isOverComplete: isOverComplete ?? this.isOverComplete,
       isWicketJustFallen: isWicketJustFallen ?? this.isWicketJustFallen,
+      totalOvers: totalOvers ?? this.totalOvers,
     );
   }
 
@@ -179,5 +290,6 @@ final bool isWicketJustFallen;
         isMatchComplete,
         isOverComplete,
         isWicketJustFallen,
+        totalOvers,
       ];
 }
