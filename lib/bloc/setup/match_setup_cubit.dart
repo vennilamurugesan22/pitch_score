@@ -53,7 +53,5 @@ class MatchSetupCubit extends Cubit<MatchSetupState> {
     return uuid.v4().substring(0, 6).toUpperCase();
   }
 
-  // Validation — both team names must be filled before starting match
-  bool get isValid =>
-      state.teamOneName.isNotEmpty && state.teamTwoName.isNotEmpty;
+
 }

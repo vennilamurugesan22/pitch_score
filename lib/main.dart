@@ -1,10 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pitch_score/bloc/history/match_history_bloc.dart';
+import 'package:pitch_score/bloc/history/match_history_event.dart';
+import 'package:pitch_score/bloc/scoring/scoring_bloc.dart';
 import 'package:pitch_score/models/ball_model.dart';
 import 'package:pitch_score/models/match_model.dart';
 import 'package:pitch_score/models/player_model.dart';
+import 'package:pitch_score/router/app_router.dart';
 import 'package:pitch_score/services/firebase/firebase_match_service.dart';
 
 void main() async {
@@ -47,21 +52,45 @@ void main() async {
   print('✅ Firebase write successful!');
 
 
-  runApp(const MyApp());
+  runApp(const PitchScoreApp());
 }
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class PitchScoreApp extends StatelessWidget {
+  const PitchScoreApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'PitchScore',
-      theme: ThemeData.dark(),
-      home: const Scaffold(
-        body: Center(
-          child: Text('PitchScore ✅', style: TextStyle(color: Colors.green)),
+    return MultiBlocProvider(
+      providers: [
+        // ScoringBloc — top level, needed across multiple screens
+        BlocProvider(
+          create: (_) => ScoringBloc(
+            matchCode: '',
+            isLiveMode: false,
+          ),
         ),
+        // MatchHistoryBloc — top level, load history on app start
+        BlocProvider(
+          create: (_) => MatchHistoryBloc()
+            ..add(const LoadHistoryEvent()),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'PitchScore',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData.dark().copyWith(
+          // Primary green accent — used for buttons, highlights
+          colorScheme: const ColorScheme.dark(
+            primary: Color(0xFF00C853),
+            secondary: Color(0xFF1DE9B6),
+            surface: Color(0xFF1A1A2E),
+          ),  
+          scaffoldBackgroundColor: const Color(0xFF0F0F1A),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(0xFF0F0F1A),
+            elevation: 0,
+          ),
+        ),
+        routerConfig: appRouter,
       ),
     );
   }

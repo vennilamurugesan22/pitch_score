@@ -22,6 +22,9 @@ class MatchSetupState extends Equatable {
   // true = Firebase sync enabled, false = offline only
   final bool isLiveMode;
 
+  // Validation — both team names must be filled
+bool get isValid => teamOneName.isNotEmpty && teamTwoName.isNotEmpty;
+
   // 6-digit code generated when isLiveMode is true
   // e.g. "CR4829" — scorer shares this on WhatsApp
   final String matchCode;
