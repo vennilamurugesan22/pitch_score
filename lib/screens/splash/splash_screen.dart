@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/app_logo.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -30,23 +31,16 @@ class _SplashScreenState extends State<SplashScreen> {
             Hero(
                   tag: 'app-logo',
                   child: Container(
-                    width: 96,
-                    height: 96,
                     decoration: BoxDecoration(
-                      color: AppColors.green,
-                      borderRadius: BorderRadius.circular(26),
+                      borderRadius: BorderRadius.circular(30),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.green.withValues(alpha: 0.4),
-                          blurRadius: 30,
+                          color: AppColors.green.withValues(alpha: 0.35),
+                          blurRadius: 40,
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.sports_cricket,
-                      color: Colors.black,
-                      size: 54,
-                    ),
+                    child: const AppLogo(size: 128),
                   ),
                 )
                 .animate()

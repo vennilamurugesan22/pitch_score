@@ -6,6 +6,7 @@ import '../../bloc/history/match_history_bloc.dart';
 import '../../bloc/history/match_history_state.dart';
 import '../../services/local/match_storage.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/app_logo.dart';
 import '../../widgets/update_checker.dart';
 import '../history/match_history_screen.dart';
 
@@ -29,19 +30,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Hero(
                   tag: 'app-logo',
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.green,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(
-                      Icons.sports_cricket,
-                      color: Colors.black,
-                      size: 22,
-                    ),
-                  ),
+                  child: const AppLogo(size: 44),
                 ),
                 const SizedBox(width: 10),
                 const Expanded(
