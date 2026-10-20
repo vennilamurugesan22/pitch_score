@@ -31,13 +31,14 @@ class MatchAdapter extends TypeAdapter<Match> {
       tossChoice: fields[11] as String?,
       matchDate: fields[12] as DateTime,
       isLiveMode: fields[13] as bool,
+      battingFirstTeamId: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Match obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -65,7 +66,9 @@ class MatchAdapter extends TypeAdapter<Match> {
       ..writeByte(12)
       ..write(obj.matchDate)
       ..writeByte(13)
-      ..write(obj.isLiveMode);
+      ..write(obj.isLiveMode)
+      ..writeByte(14)
+      ..write(obj.battingFirstTeamId);
   }
 
   @override

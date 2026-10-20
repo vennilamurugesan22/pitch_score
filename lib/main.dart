@@ -5,55 +5,52 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pitch_score/bloc/history/match_history_bloc.dart';
 import 'package:pitch_score/bloc/history/match_history_event.dart';
-import 'package:pitch_score/bloc/scoring/scoring_bloc.dart';
+import 'package:pitch_score/firebase_options.dart';
 import 'package:pitch_score/models/ball_model.dart';
 import 'package:pitch_score/models/match_model.dart';
 import 'package:pitch_score/models/player_model.dart';
 import 'package:pitch_score/router/app_router.dart';
-import 'package:pitch_score/services/firebase/firebase_match_service.dart';
+import 'package:pitch_score/services/app_update_service.dart';
+import 'package:pitch_score/services/firebase/push_notification_service.dart';
+import 'package:pitch_score/services/local/match_storage.dart';
+import 'package:pitch_score/theme/app_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp();
-   // Add this line
-   FirebaseDatabase.instance.databaseURL = 'https://pitchscore-d15a6-default-rtdb.firebaseio.com';
-   await Hive.initFlutter();
-   Hive.registerAdapter(BallAdapter());
-   Hive.registerAdapter(PlayerAdapter());
-   Hive.registerAdapter(MatchAdapter());
 
-/// hive write and read tesing 
-  final box = await Hive.openBox<Ball>('test_balls');
-  await box.put('test', Ball(
-    runs: 4,
-    isWicket: false,
-    isWide: false,
-    isNoBall: false,
-    isBye: false,
-    isLegBye: false,
-    batsmanId: 'p1',
-    bowlerId: 'p2',
-    strikerNameBefore: 'p1',
-    nonStrikerNameBefore: 'p3',
-    timestamp: DateTime.now(),
-  ));
-  final retrieved = box.get('test');
-  print('✅ Hive working — runs: ${retrieved?.runs}');
+  // ── Hive (offline storage) — the app must always work without internet
+  await Hive.initFlutter();
+  Hive.registerAdapter(BallAdapter());
+  Hive.registerAdapter(PlayerAdapter());
+  Hive.registerAdapter(MatchAdapter());
+  await MatchStorage.init();
+  await AppUpdateService.init();
 
-  // Temporary Firebase test — remove after verifying
-  final testService = FirebaseMatchService();
-  await testService.createMatch(
-    matchCode: 'TEST01',
-    teamOneName: 'Chennai XI',
-    teamTwoName: 'Mumbai Kings',
-    totalOvers: 6,
-    maxWickets: 10,
-  );
-  print('✅ Firebase write successful!');
-
+  // ── Firebase (live sharing) — optional; failure = offline-only app
+  try {
+    // Android may already have created [DEFAULT] natively from
+    // google-services.json — initialising again throws duplicate-app
+    if (Firebase.apps.isEmpty) {
+      try {
+        await Firebase.initializeApp(
+            options: DefaultFirebaseOptions.currentPlatform);
+      } on FirebaseException catch (e) {
+        if (e.code != 'duplicate-app') rethrow;
+      }
+    }
+    final db = FirebaseDatabase.instance;
+    db.databaseURL = 'https://pitchscore-d15a6-default-rtdb.firebaseio.com';
+    // Queue writes while the ground has no signal, send when it's back
+    db.setPersistenceEnabled(true);
+    // Not awaited — waiting for an FCM / APNs token must never block startup
+    PushNotificationService.init();
+  } catch (e) {
+    debugPrint('Firebase unavailable, running offline only: $e');
+  }
 
   runApp(const PitchScoreApp());
 }
+
 class PitchScoreApp extends StatelessWidget {
   const PitchScoreApp({super.key});
 
@@ -61,17 +58,9 @@ class PitchScoreApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        // ScoringBloc — top level, needed across multiple screens
-        BlocProvider(
-          create: (_) => ScoringBloc(
-            matchCode: '',
-            isLiveMode: false,
-          ),
-        ),
         // MatchHistoryBloc — top level, load history on app start
         BlocProvider(
-          create: (_) => MatchHistoryBloc()
-            ..add(const LoadHistoryEvent()),
+          create: (_) => MatchHistoryBloc()..add(const LoadHistoryEvent()),
         ),
       ],
       child: MaterialApp.router(
@@ -80,14 +69,29 @@ class PitchScoreApp extends StatelessWidget {
         theme: ThemeData.dark().copyWith(
           // Primary green accent — used for buttons, highlights
           colorScheme: const ColorScheme.dark(
-            primary: Color(0xFF00C853),
+            primary: AppColors.green,
             secondary: Color(0xFF1DE9B6),
-            surface: Color(0xFF1A1A2E),
-          ),  
-          scaffoldBackgroundColor: const Color(0xFF0F0F1A),
+            surface: AppColors.surface,
+          ),
+          scaffoldBackgroundColor: AppColors.background,
           appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF0F0F1A),
+            backgroundColor: AppColors.background,
+            foregroundColor: AppColors.textPrimary,
             elevation: 0,
+            scrolledUnderElevation: 0,
+            titleTextStyle: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          snackBarTheme: const SnackBarThemeData(
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: AppColors.surfaceLight,
+            contentTextStyle: TextStyle(color: AppColors.textPrimary),
+          ),
+          bottomSheetTheme: const BottomSheetThemeData(
+            backgroundColor: AppColors.surface,
           ),
         ),
         routerConfig: appRouter,

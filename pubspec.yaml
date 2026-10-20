@@ -36,6 +36,7 @@ dependencies:
   hive_flutter: ^1.1.0
   firebase_core: ^4.5.0
   firebase_database: ^12.1.4
+  firebase_messaging:
   go_router: ^17.1.0
   uuid: ^4.5.3
   flutter_contacts: ^1.1.9
@@ -50,9 +51,13 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  package_info_plus: ^9.0.1
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
   hive_generator: ^2.0.1
   build_runner: ^2.4.13

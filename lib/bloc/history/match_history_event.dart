@@ -29,3 +29,8 @@ class DeleteMatchEvent extends MatchHistoryEvent {
   @override
   List<Object?> get props => [matchId];
 }
+
+// Fired from Settings — wipe all saved matches
+class ClearHistoryEvent extends MatchHistoryEvent {
+  const ClearHistoryEvent();
+}

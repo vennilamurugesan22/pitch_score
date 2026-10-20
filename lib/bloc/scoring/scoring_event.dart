@@ -11,73 +11,73 @@ abstract class ScoringEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-// Fired when scorer taps any button — 0, 1, 2, 3, 4, 6, W, Wd, NB, LB
+// Fired when scorer taps any button — 0, 1, 2, 3, 4, 6, W, Wd, NB, B, LB
 // The Ball object carries all the info about what happened
+// newBatsmanId = who comes in if this ball is a wicket
 class AddBallEvent extends ScoringEvent {
   final Ball ball;
-  const AddBallEvent(this.ball);
+  final String? newBatsmanId;
+  const AddBallEvent(this.ball, {this.newBatsmanId});
 
-  // props tells Equatable which fields to use for comparison
-  // Important for BLoC to detect if same event fired twice
   @override
-  List<Object?> get props => [ball];
+  List<Object?> get props => [ball, newBatsmanId];
 }
 
-// Fired when scorer taps the Undo button
-// No extra data needed — just remove the last ball
+// Fired when the scorer taps Undo — remove the last ball
 class UndoBallEvent extends ScoringEvent {
   const UndoBallEvent();
 }
 
-// Fired when a wicket falls and scorer picks the new batsman
-// batsmanId = the id of the new batsman coming in
-class SelectBatsmanEvent extends ScoringEvent {
-  final String batsmanId;
-  const SelectBatsmanEvent(this.batsmanId);
-
-  @override
-  List<Object?> get props => [batsmanId];
-}
-
-// Fired when an over is complete and scorer picks next bowler
-class SelectBowlerEvent extends ScoringEvent {
+// Start of each innings — pick the two openers and opening bowler
+class SetOpenersEvent extends ScoringEvent {
+  final String strikerId;
+  final String nonStrikerId;
   final String bowlerId;
-  const SelectBowlerEvent(this.bowlerId);
 
-  @override
-  List<Object?> get props => [bowlerId];
-}
-
-// Fired when innings ends — either all overs done or all wickets fallen
-// or scorer manually taps "End Innings"
-class EndInningsEvent extends ScoringEvent {
-  const EndInningsEvent();
-}
-
-
-
-
-// Fired after scorer taps W and fills the wicket popup
-// dismissalType = "caught" / "bowled" / "runout" / "lbw" / "stumped" / "hitwicket"
-// newBatsmanId = player selected from the list to come in next
-class WicketDetailEvent extends ScoringEvent {
-  final String dismissalType;
-  final String newBatsmanId;
-
-  const WicketDetailEvent({
-    required this.dismissalType,
-    required this.newBatsmanId,
+  const SetOpenersEvent({
+    required this.strikerId,
+    required this.nonStrikerId,
+    required this.bowlerId,
   });
 
   @override
-  List<Object?> get props => [dismissalType, newBatsmanId];
+  List<Object?> get props => [strikerId, nonStrikerId, bowlerId];
 }
 
-// In scoring_event.dart
+// Fired when an over is complete and scorer picks next bowler
 class NewBowlerSelectedEvent extends ScoringEvent {
   final String bowlerId;
   const NewBowlerSelectedEvent(this.bowlerId);
 
   @override
   List<Object?> get props => [bowlerId];
+}
+
+// Manual fix — scorer swaps who is on strike
+class SwapStrikeEvent extends ScoringEvent {
+  const SwapStrikeEvent();
+}
+
+// Scorer ends the innings early (rain, declared, everyone has to go home)
+class EndInningsEvent extends ScoringEvent {
+  const EndInningsEvent();
+}
+
+// From innings break screen — begin the chase
+class StartSecondInningsEvent extends ScoringEvent {
+  const StartSecondInningsEvent();
+}
+
+// Scorer confirms the result at the end of the 2nd innings
+class FinishMatchEvent extends ScoringEvent {
+  const FinishMatchEvent();
+}
+
+// Scorer turns on live sharing mid-match (match was started offline)
+class EnableLiveSharingEvent extends ScoringEvent {
+  final String matchCode;
+  const EnableLiveSharingEvent(this.matchCode);
+
+  @override
+  List<Object?> get props => [matchCode];
 }

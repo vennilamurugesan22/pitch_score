@@ -1,116 +1,130 @@
+import 'dart:math';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:pitch_score/bloc/scoring/scoring_state.dart';
-import 'package:pitch_score/models/ball_model.dart';
+import 'package:pitch_score/bloc/setup/match_setup_state.dart';
 
 // This service handles ALL Firebase communication
 // ScoringBloc calls these methods — it never touches Firebase directly
 // Clean separation: BLoC handles logic, this service handles network
+//
+// Firebase layout:
+//   /matches/{code}/meta            team names, overs, status
+//   /matches/{code}/players         [{id, name, teamId}]
+//   /matches/{code}/innings/{n}/balls   ball list for each innings
+//   /matches/{code}/state           full snapshot — spectators read THIS
+//   /matches/{code}/viewers/{id}    one entry per spectator (presence)
 
 class FirebaseMatchService {
-  // Get reference to Firebase Realtime Database
-  final DatabaseReference _db = FirebaseDatabase.instance.ref();
+  // Lazy — so the app still works if Firebase failed to initialise
+  DatabaseReference? get _db {
+    if (Firebase.apps.isEmpty) return null;
+    return FirebaseDatabase.instance.ref();
+  }
+
+  static bool get isAvailable => Firebase.apps.isNotEmpty;
 
   // ── Create Match ─────────────────────────────────────────────────
   // Called once when scorer starts a live match
-  // Creates the match entry on Firebase under the match code
-  Future<void> createMatch({
-    required String matchCode,
-    required String teamOneName,
-    required String teamTwoName,
-    required int totalOvers,
-    required int maxWickets,
-  }) async {
+  Future<void> createMatch(String matchCode, MatchSetupState setup) async {
+    final db = _db;
+    if (db == null) return;
     try {
-      await _db.child('matches/$matchCode/meta').set({
-        'teamOneName': teamOneName,
-        'teamTwoName': teamTwoName,
-        'totalOvers': totalOvers,
-        'maxWickets': maxWickets,
-        'status': 'live', // live / completed
-        'createdAt': DateTime.now().toIso8601String(),
+      await db.child('matches/$matchCode').update({
+        'meta': {
+          'teamOneName': setup.teamOneName,
+          'teamTwoName': setup.teamTwoName,
+          'totalOvers': setup.totalOvers,
+          'maxWickets': setup.maxWickets,
+          'status': 'live', // live / completed
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+        'players': setup.players.map((p) => p.toMap()).toList(),
       });
     } catch (e) {
       // Firebase failed — app still works offline
-      // We never crash the app because of Firebase failure
-      print('Firebase createMatch error: $e');
+      debugPrint('Firebase createMatch error: $e');
     }
   }
 
-  // ── Sync Ball ────────────────────────────────────────────────────
-  // Called every time scorer taps a button
-  // Writes the new ball AND updated score summary to Firebase
-  // Spectators read this summary to show live score
-  Future<void> syncBall({
-    required String matchCode,
-    required Ball ball,
-    required ScoringState state,
-  }) async {
+  // Same as createMatch, for a match that started offline
+  Future<void> createMatchFromState(String matchCode, ScoringState s) async {
+    final db = _db;
+    if (db == null) return;
     try {
-      // Write the ball to the innings ball list
-      final inningsPath = 'matches/$matchCode/innings/${state.currentInnings}/balls';
-      await _db.child(inningsPath).push().set(ball.toMap());
+      await db.child('matches/$matchCode').update({
+        'meta': {
+          'teamOneName': s.teamOneName,
+          'teamTwoName': s.teamTwoName,
+          'totalOvers': s.totalOvers,
+          'maxWickets': s.maxWickets,
+          'status': 'live',
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+        'players': s.players.map((p) => p.toMap()).toList(),
+      });
+    } catch (e) {
+      debugPrint('Firebase createMatchFromState error: $e');
+    }
+  }
 
-      // Also update the live state summary
-      // Spectators read THIS — not the full ball list
-      // Much faster to read one object than hundreds of balls
-      await _db.child('matches/$matchCode/state').set({
-        'totalRuns': state.totalRuns,
-        'wickets': state.wickets,
-        'overNumber': state.overNumber,
-        'ballsInCurrentOver': state.ballsInCurrentOver,
-        'currentInnings': state.currentInnings,
-        'strikerId': state.strikerId,
-        'nonStrikerId': state.nonStrikerId,
-        'currentBowlerId': state.currentBowlerId,
-        'extras': state.extras,
-        'firstInningsScore': state.firstInningsScore,
-        'isMatchComplete': state.isMatchComplete,
-        'lastUpdated': DateTime.now().toIso8601String(),
+  // Random 6-digit code not already used on Firebase
+  Future<String> newMatchCode() async {
+    final random = Random.secure();
+    String code() => List.generate(6, (_) => random.nextInt(10)).join();
+    var c = code();
+    for (var i = 0; i < 3 && await matchExists(c); i++) {
+      c = code();
+    }
+    return c;
+  }
+
+  // ── Sync State ───────────────────────────────────────────────────
+  // Called on every state change (ball, undo, new bowler...)
+  // One multi-path update = one network round trip.
+  // With offline persistence on, writes queue up and send when back online.
+  Future<void> syncState(String matchCode, ScoringState state) async {
+    final db = _db;
+    if (db == null) return;
+    try {
+      final inningsBalls = state.ballLog.map((b) => b.toMap()).toList();
+      await db.child('matches/$matchCode').update({
+        'state': {
+          ...state.toMap(),
+          'lastUpdated': ServerValue.timestamp,
+        },
+        'innings/${state.currentInnings}/balls': inningsBalls,
       });
     } catch (e) {
       // Silent fail — scoring continues even if Firebase is down
-      print('Firebase syncBall error: $e');
+      debugPrint('Firebase syncState error: $e');
     }
   }
 
   // ── Watch Match ──────────────────────────────────────────────────
-  // Called by spectators — returns a Stream
-  // Every time scorer taps a button, this stream gets a new event
-  // StreamBuilder in UI listens to this and redraws automatically
-  Stream<Map<String, dynamic>?> watchMatch(String matchCode) {
-    return _db
-        .child('matches/$matchCode/state')
-        .onValue
-        .map((event) {
-          // If match not found — return null
-          if (!event.snapshot.exists) return null;
-
-          // Convert Firebase snapshot to a Map
-          return Map<String, dynamic>.from(
-            event.snapshot.value as Map,
-          );
-        });
-  }
-
-  // ── Watch Match Meta ─────────────────────────────────────────────
-  // Spectator reads team names and overs when they join
-  Future<Map<String, dynamic>?> getMatchMeta(String matchCode) async {
-    try {
-      final snapshot = await _db.child('matches/$matchCode/meta').get();
-      if (!snapshot.exists) return null;
-      return Map<String, dynamic>.from(snapshot.value as Map);
-    } catch (e) {
-      print('Firebase getMatchMeta error: $e');
-      return null;
-    }
+  // Spectators — new event every time the scorer taps a button
+  // Emits null if the match code doesn't exist
+  Stream<ScoringState?> watchMatch(String matchCode) {
+    final db = _db;
+    if (db == null) return Stream.error('Live scores need internet');
+    return db.child('matches/$matchCode/state').onValue.map((event) {
+      final value = event.snapshot.value;
+      if (value is! Map) return null;
+      return ScoringState.fromMap(value);
+    });
   }
 
   // ── Match Exists Check ───────────────────────────────────────────
-  // Before creating a match, check if code is already taken
-  // If taken — generate a new code
   Future<bool> matchExists(String matchCode) async {
+    final db = _db;
+    if (db == null) return false;
     try {
-      final snapshot = await _db.child('matches/$matchCode/meta').get();
+      final snapshot = await db
+          .child('matches/$matchCode/meta')
+          .get()
+          .timeout(const Duration(seconds: 8));
       return snapshot.exists;
     } catch (e) {
       return false;
@@ -118,51 +132,55 @@ class FirebaseMatchService {
   }
 
   // ── Complete Match ───────────────────────────────────────────────
-  // Called when match ends — update status so spectators know
   Future<void> completeMatch(String matchCode, String result) async {
+    final db = _db;
+    if (db == null) return;
     try {
-      await _db.child('matches/$matchCode/meta').update({
+      await db.child('matches/$matchCode/meta').update({
         'status': 'completed',
         'result': result,
         'completedAt': DateTime.now().toIso8601String(),
       });
     } catch (e) {
-      print('Firebase completeMatch error: $e');
+      debugPrint('Firebase completeMatch error: $e');
     }
   }
 
-  // ── Viewers Count ────────────────────────────────────────────────
-  // Track how many people are watching live
-  // Increment when spectator joins, decrement when they leave
-  Future<void> incrementViewers(String matchCode) async {
+  // ── Viewers (presence) ───────────────────────────────────────────
+  // Each spectator writes /viewers/{viewerId}. onDisconnect removes it
+  // automatically if the phone loses network or the app is killed —
+  // so the count never gets stuck (a plain counter would).
+  Future<void> incrementViewers(String matchCode, String viewerId) async {
+    final db = _db;
+    if (db == null) return;
     try {
-      final ref = _db.child('matches/$matchCode/viewers');
-      await ref.runTransaction((value) {
-        return Transaction.success((value as int? ?? 0) + 1);
-      });
+      final ref = db.child('matches/$matchCode/viewers/$viewerId');
+      await ref.onDisconnect().remove();
+      await ref.set(true);
     } catch (e) {
-      print('Firebase incrementViewers error: $e');
+      debugPrint('Firebase incrementViewers error: $e');
     }
   }
 
-  Future<void> decrementViewers(String matchCode) async {
+  Future<void> decrementViewers(String matchCode, String viewerId) async {
+    final db = _db;
+    if (db == null) return;
     try {
-      final ref = _db.child('matches/$matchCode/viewers');
-      await ref.runTransaction((value) {
-        final current = value as int? ?? 0;
-        return Transaction.success(current > 0 ? current - 1 : 0);
-      });
+      final ref = db.child('matches/$matchCode/viewers/$viewerId');
+      await ref.remove();
+      await ref.onDisconnect().cancel();
     } catch (e) {
-      print('Firebase decrementViewers error: $e');
+      debugPrint('Firebase decrementViewers error: $e');
     }
   }
 
   // ── Watch Viewers Count ──────────────────────────────────────────
-  // Stream of viewer count — updates live on spectator screen
   Stream<int> watchViewers(String matchCode) {
-    return _db
+    final db = _db;
+    if (db == null) return Stream.value(0);
+    return db
         .child('matches/$matchCode/viewers')
         .onValue
-        .map((event) => (event.snapshot.value as int?) ?? 0);
+        .map((event) => event.snapshot.children.length);
   }
 }

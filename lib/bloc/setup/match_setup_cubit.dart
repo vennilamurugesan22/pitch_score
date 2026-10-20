@@ -1,7 +1,8 @@
 // match_setup_cubit.dart
 
+import 'dart:math';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uuid/uuid.dart';
 import '../../models/player_model.dart';
 import 'match_setup_state.dart';
 
@@ -31,6 +32,23 @@ class MatchSetupCubit extends Cubit<MatchSetupState> {
   void addPlayer(Player player) =>
       emit(state.copyWith(players: [...state.players, player]));
 
+  // Called after picking several people from contacts
+  void addPlayers(List<Player> players) =>
+      emit(state.copyWith(players: [...state.players, ...players]));
+
+  // Called when user taps a player's team badge — move to the other team
+  void togglePlayerTeam(String playerId) => emit(state.copyWith(
+        players: state.players
+            .map((p) => p.id == playerId
+                ? Player(
+                    id: p.id,
+                    name: p.name,
+                    teamId: p.teamId == 'team1' ? 'team2' : 'team1',
+                  )
+                : p)
+            .toList(),
+      ));
+
   // Called when user removes a player
   void removePlayer(String playerId) =>
       emit(state.copyWith(
@@ -45,13 +63,15 @@ class MatchSetupCubit extends Cubit<MatchSetupState> {
     emit(state.copyWith(isLiveMode: value, matchCode: code));
   }
 
-  // Generate a random 6-character uppercase code
-  // uuid().v4() gives something like "a1b2c3d4-e5f6-..."
-  // We take first 6 chars and uppercase: "A1B2C3"
-  String _generateMatchCode() {
-    const uuid = Uuid();
-    return uuid.v4().substring(0, 6).toUpperCase();
-  }
+  // New code if the first one is already taken on Firebase
+  void regenerateMatchCode() =>
+      emit(state.copyWith(matchCode: _generateMatchCode()));
 
+  // Random 6-digit code e.g. "482913" — digits only so spectators
+  // can type it on the number keyboard
+  String _generateMatchCode() {
+    final random = Random.secure();
+    return List.generate(6, (_) => random.nextInt(10)).join();
+  }
 
 }

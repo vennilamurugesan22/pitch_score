@@ -23,7 +23,14 @@ class MatchSetupState extends Equatable {
   final bool isLiveMode;
 
   // Validation — both team names must be filled
-bool get isValid => teamOneName.isNotEmpty && teamTwoName.isNotEmpty;
+  bool get isValid =>
+      teamOneName.trim().isNotEmpty && teamTwoName.trim().isNotEmpty;
+
+  int countFor(String teamId) =>
+      players.where((p) => p.teamId == teamId).length;
+
+  // Ready to start — both team names + min 2 players each
+  bool get canStart => isValid && countFor('team1') >= 2 && countFor('team2') >= 2;
 
   // 6-digit code generated when isLiveMode is true
   // e.g. "CR4829" — scorer shares this on WhatsApp

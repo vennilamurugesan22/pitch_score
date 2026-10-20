@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watch live · PitchScore</title>
+<meta property="og:title" content="🏏 Live cricket score — PitchScore">
+<meta property="og:description" content="Watch this match ball by ball on PitchScore.">
+<style>
+  :root { --bg:#0f0f1a; --surface:#1a1a2e; --green:#00c853; --red:#ef5350; --text:#fff; --muted:#888; --border:#2a2a3e; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,Roboto,sans-serif;
+         display:flex; justify-content:center; padding:24px 16px; }
+  main { width:100%; max-width:420px; text-align:center; }
+  .live { display:inline-flex; align-items:center; gap:6px; background:var(--red); color:#fff; font-weight:900;
+          letter-spacing:1.5px; font-size:13px; padding:6px 12px; border-radius:20px; }
+  .dot { width:8px; height:8px; border-radius:50%; background:#fff; animation:pulse 1.2s infinite; }
+  @keyframes pulse { 50% { opacity:.2; transform:scale(.6); } }
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px; margin:16px 0; }
+  .teams { font-weight:800; font-size:18px; }
+  .score { font-size:56px; font-weight:900; margin:8px 0 0; }
+  .muted { color:var(--muted); font-size:14px; }
+  .code { color:var(--green); font-size:34px; font-weight:900; letter-spacing:8px; }
+  a.btn { display:block; background:var(--green); color:#000; font-weight:800; text-decoration:none;
+          padding:16px; border-radius:14px; margin-top:12px; font-size:16px; }
+  a.btn.alt { background:transparent; color:var(--text); border:1px solid var(--border); }
+</style>
+</head>
+<body>
+<main>
+  <span class="live"><span class="dot"></span>LIVE</span>
+  <div class="card">
+    <div class="teams" id="teams">Loading match…</div>
+    <div class="score" id="score">–</div>
+    <div class="muted" id="status"></div>
+  </div>
+  <div class="muted">Match code</div>
+  <div class="code" id="code"></div>
+  <a class="btn" id="open" href="#">Open in PitchScore app</a>
+  <a class="btn alt" id="get" href="#">Get PitchScore</a>
+  <p class="muted">No app? This page updates every few seconds.</p>
+</main>
+<script>
+  const PACKAGE = 'com.example.pitch_score';
+  const DB = 'https://pitchscore-d15a6-default-rtdb.firebaseio.com';
+  const code = (location.pathname.match(/\/watch\/(\d{6})/) || [])[1] || '';
+  const store = 'https://play.google.com/store/apps/details?id=' + PACKAGE;
+  const appLink = 'pitchscore://app/watch/' + code;
+  const isAndroid = /android/i.test(navigator.userAgent);
+  // Android: intent URL opens the app if installed, else the Play Store
+  const openUrl = isAndroid
+    ? 'intent://app/watch/' + code + '#Intent;scheme=pitchscore;package=' + PACKAGE +
+      ';S.browser_fallback_url=' + encodeURIComponent(store) + ';end'
+    : appLink;
+
+  document.getElementById('code').textContent = code;
+  document.getElementById('open').href = openUrl;
+  document.getElementById('get').href = store;
+  if (code && isAndroid) location.href = openUrl; // try the app straight away
+
+  async function refresh() {
+    if (!code) { document.getElementById('teams').textContent = 'Invalid match link'; return; }
+    try {
+      const s = await (await fetch(DB + '/matches/' + code + '/state.json')).json();
+      if (!s) { document.getElementById('teams').textContent = 'Match not found'; return; }
+      document.getElementById('teams').textContent = s.teamOneName + ' vs ' + s.teamTwoName;
+      document.getElementById('score').textContent = s.totalRuns + '/' + s.wickets;
+      document.getElementById('status').textContent = s.isMatchComplete
+        ? 'Match finished' : ('Overs ' + s.overs + ' · innings ' + s.currentInnings);
+    } catch (e) { document.getElementById('status').textContent = 'Reconnecting…'; }
+  }
+  refresh(); setInterval(refresh, 5000);
+</script>
+</body>
+</html>

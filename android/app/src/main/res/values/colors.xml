@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- PitchScore background (AppColors.background) -->
+    <color name="launch_background">#0F0F1A</color>
+</resources>

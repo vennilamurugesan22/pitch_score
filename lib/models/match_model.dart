@@ -4,6 +4,7 @@ import 'player_model.dart';
 
 part 'match_model.g.dart';
 
+// A finished match as stored in Hive history
 @HiveType(typeId: 2)
 class Match extends HiveObject {
 
@@ -38,7 +39,7 @@ class Match extends HiveObject {
   final String? result; // "Chennai XI won by 4 runs"
 
   @HiveField(10)
-  final String? tossWinner;
+  final String? tossWinner; // team id — 'team1' / 'team2'
 
   @HiveField(11)
   final String? tossChoice; // 'bat' or 'bowl'
@@ -48,6 +49,9 @@ class Match extends HiveObject {
 
   @HiveField(13)
   final bool isLiveMode;
+
+  @HiveField(14)
+  final String? battingFirstTeamId; // 'team1' / 'team2'
 
   Match({
     required this.id,
@@ -64,6 +68,7 @@ class Match extends HiveObject {
     this.tossChoice,
     required this.matchDate,
     required this.isLiveMode,
+    this.battingFirstTeamId,
   });
 
   // For Firebase meta

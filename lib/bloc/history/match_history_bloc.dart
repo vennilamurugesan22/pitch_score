@@ -14,16 +14,22 @@ class MatchHistoryBloc extends Bloc<MatchHistoryEvent, MatchHistoryState> {
     on<LoadHistoryEvent>(_onLoad);
     on<SaveMatchEvent>(_onSave);
     on<DeleteMatchEvent>(_onDelete);
+    on<ClearHistoryEvent>(_onClear);
   }
 
   Future<void> _onLoad(
       LoadHistoryEvent event, Emitter<MatchHistoryState> emit) async {
-    emit(MatchHistoryLoading());
-    // Open the Hive box — if already open, returns existing box
-    final box = await Hive.openBox<Match>(_boxName);
-    // .values gives all stored matches
-    // .reversed shows newest match first
-    emit(MatchHistoryLoaded(box.values.toList().reversed.toList()));
+    if (state is! MatchHistoryLoaded) emit(MatchHistoryLoading());
+    try {
+      // Open the Hive box — if already open, returns existing box
+      final box = await Hive.openBox<Match>(_boxName);
+      // Newest match first
+      final matches = box.values.toList()
+        ..sort((a, b) => b.matchDate.compareTo(a.matchDate));
+      emit(MatchHistoryLoaded(matches));
+    } catch (e) {
+      emit(MatchHistoryError('Could not load history: $e'));
+    }
   }
 
   Future<void> _onSave(
@@ -39,6 +45,13 @@ class MatchHistoryBloc extends Bloc<MatchHistoryEvent, MatchHistoryState> {
       DeleteMatchEvent event, Emitter<MatchHistoryState> emit) async {
     final box = await Hive.openBox<Match>(_boxName);
     await box.delete(event.matchId);
+    add(const LoadHistoryEvent());
+  }
+
+  Future<void> _onClear(
+      ClearHistoryEvent event, Emitter<MatchHistoryState> emit) async {
+    final box = await Hive.openBox<Match>(_boxName);
+    await box.clear();
     add(const LoadHistoryEvent());
   }
 }
