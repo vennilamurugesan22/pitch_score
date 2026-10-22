@@ -85,7 +85,7 @@ class _MatchResultScreenState extends State<MatchResultScreen> {
             ),
           ],
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'PitchScore · Score · Share · Celebrate',
             textAlign: TextAlign.center,
             style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
@@ -100,7 +100,7 @@ class _MatchResultScreenState extends State<MatchResultScreen> {
     final banner = Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 22),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [AppColors.greenDark, AppColors.blueDark],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -115,7 +115,7 @@ class _MatchResultScreenState extends State<MatchResultScreen> {
           Text(
             s.resultText,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 22,
               fontWeight: FontWeight.w800,
@@ -127,10 +127,7 @@ class _MatchResultScreenState extends State<MatchResultScreen> {
             '  ·  '
             '${s.teamName(s.bowlingFirstId)} ${s.secondInningsSummary?.scoreText ?? '-'} (${s.secondInningsSummary?.oversText ?? '-'})',
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
           ),
           if (potm != null) ...[
             const SizedBox(height: 14),
@@ -143,7 +140,7 @@ class _MatchResultScreenState extends State<MatchResultScreen> {
               ),
               child: Text(
                 '⭐ Player of the match: ${potm.name}',
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.amber,
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
@@ -210,7 +207,7 @@ class _MatchResultScreenState extends State<MatchResultScreen> {
             ),
             Container(
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.surface,
                 border: Border(top: BorderSide(color: AppColors.border)),
               ),
@@ -229,13 +226,13 @@ class _MatchResultScreenState extends State<MatchResultScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Icon(Icons.share, color: AppColors.green),
-                        label: const Text(
+                            : Icon(Icons.share, color: AppColors.green),
+                        label: Text(
                           'Share',
                           style: TextStyle(color: AppColors.textPrimary),
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: AppColors.green),
+                          side: BorderSide(color: AppColors.green),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -255,10 +252,10 @@ class _MatchResultScreenState extends State<MatchResultScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Done',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: AppColors.onAccent,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -268,7 +265,7 @@ class _MatchResultScreenState extends State<MatchResultScreen> {
                 ],
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(bottom: 6),
               child: Text(
                 '✓ Saved to match history',

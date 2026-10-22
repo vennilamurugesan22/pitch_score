@@ -4,6 +4,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../bloc/history/match_history_bloc.dart';
 import '../../bloc/history/match_history_event.dart';
 import '../../theme/app_colors.dart';
+import '../../theme/theme_controller.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -13,28 +14,25 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text(
+        title: Text(
           'Clear all history?',
           style: TextStyle(color: AppColors.textPrimary),
         ),
-        content: const Text(
+        content: Text(
           'All saved matches on this phone will be deleted.',
           style: TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(
+            child: Text(
               'Cancel',
               style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(
-              'Delete all',
-              style: TextStyle(color: AppColors.red),
-            ),
+            child: Text('Delete all', style: TextStyle(color: AppColors.red)),
           ),
         ],
       ),
@@ -54,11 +52,7 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _tile(
-            icon: Icons.dark_mode_outlined,
-            title: 'Theme',
-            subtitle: 'Dark — easy on the eyes in the sun',
-          ),
+          const _ThemePicker(),
           _tile(
             icon: Icons.delete_sweep_outlined,
             title: 'Clear match history',
@@ -85,7 +79,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          const Center(
+          Center(
             child: Text(
               'Score · Share · Celebrate',
               style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
@@ -100,9 +94,10 @@ class SettingsScreen extends StatelessWidget {
     required IconData icon,
     required String title,
     required String subtitle,
-    Color color = AppColors.green,
+    Color? color,
     VoidCallback? onTap,
   }) {
+    color ??= AppColors.green;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -116,14 +111,131 @@ class SettingsScreen extends StatelessWidget {
         leading: Icon(icon, color: color),
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w600,
           ),
         ),
         subtitle: Text(
           subtitle,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+        ),
+      ),
+    );
+  }
+}
+
+// Dark / Light / System — dark is the default
+class _ThemePicker extends StatelessWidget {
+  const _ThemePicker();
+
+  static const _options = [
+    (ThemeMode.dark, Icons.dark_mode_outlined, 'Dark'),
+    (ThemeMode.light, Icons.light_mode_outlined, 'Light'),
+    (ThemeMode.system, Icons.brightness_auto_outlined, 'System'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = ThemeController.instance;
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: controller,
+      builder: (context, mode, _) => Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.palette_outlined, color: AppColors.green),
+                const SizedBox(width: 16),
+                Text(
+                  'Theme',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.only(left: 40),
+              child: Text(
+                switch (mode) {
+                  ThemeMode.dark => 'Easy on the eyes, saves battery',
+                  ThemeMode.light => 'Bright and clear for day matches',
+                  ThemeMode.system => 'Follows your phone setting',
+                },
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                for (final (value, icon, label) in _options)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: _option(
+                        icon: icon,
+                        label: label,
+                        selected: mode == value,
+                        onTap: () => controller.setMode(value),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _option({
+    required IconData icon,
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: selected ? AppColors.greenDark : AppColors.background,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected ? AppColors.green : AppColors.border,
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: 22,
+              color: selected ? AppColors.green : AppColors.textSecondary,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: selected ? AppColors.green : AppColors.textPrimary,
+                fontSize: 13,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       ),
     );

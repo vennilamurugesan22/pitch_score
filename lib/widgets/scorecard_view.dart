@@ -38,7 +38,7 @@ class InningsScorecard extends StatelessWidget {
                   teamName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textPrimary,
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
@@ -47,7 +47,7 @@ class InningsScorecard extends StatelessWidget {
               ),
               Text(
                 s.scoreText,
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.green,
                   fontWeight: FontWeight.w800,
                   fontSize: 20,
@@ -56,7 +56,7 @@ class InningsScorecard extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 '(${s.oversText} ov)',
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
               ),
             ],
           ),
@@ -85,7 +85,8 @@ class InningsScorecard extends StatelessWidget {
         _infoLine(
           'Extras',
           '${s.extras}',
-          detail: 'wd ${s.wides}, nb ${s.noBalls}, b ${s.byes}, lb ${s.legByes}',
+          detail:
+              'wd ${s.wides}, nb ${s.noBalls}, b ${s.byes}, lb ${s.legByes}',
         ),
         _infoLine(
           'Total',
@@ -98,7 +99,7 @@ class InningsScorecard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
             child: Text(
               'Did not bat: ${s.didNotBat.map((p) => p.name).join(', ')}',
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
             ),
           ),
         const SizedBox(height: 14),
@@ -136,7 +137,10 @@ class InningsScorecard extends StatelessWidget {
             children: [
               for (final f in s.fallOfWickets)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.surface,
                     borderRadius: BorderRadius.circular(8),
@@ -144,7 +148,10 @@ class InningsScorecard extends StatelessWidget {
                   ),
                   child: Text(
                     '${f.score}-${f.wicketNumber} (${f.batsmanName}, ${f.overText})',
-                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 12),
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 12,
+                    ),
                   ),
                 ),
             ],
@@ -172,29 +179,41 @@ class InningsScorecard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Ov ${o.overNumber}',
-                            style: const TextStyle(
-                                color: AppColors.textPrimary,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12)),
-                        Text(o.bowlerName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                color: AppColors.textSecondary, fontSize: 10)),
+                        Text(
+                          'Ov ${o.overNumber}',
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Text(
+                          o.bowlerName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: 10,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   Expanded(
                     child: Wrap(
                       runSpacing: 4,
-                      children: [for (final b in o.balls) BallCircle(ball: b, size: 26)],
+                      children: [
+                        for (final b in o.balls) BallCircle(ball: b, size: 26),
+                      ],
                     ),
                   ),
                   Text(
                     '${o.runs}\n${o.scoreAtEnd}/${o.wicketsAtEnd}',
                     textAlign: TextAlign.right,
-                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 11),
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 11,
+                    ),
                   ),
                 ],
               ),
@@ -204,33 +223,44 @@ class InningsScorecard extends StatelessWidget {
     );
   }
 
-  Widget _infoLine(String label, String value, {String? detail, bool bold = false}) {
+  Widget _infoLine(
+    String label,
+    String value, {
+    String? detail,
+    bool bold = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
       child: Row(
         children: [
-          Text(label,
-              style: TextStyle(
-                color: bold ? AppColors.textPrimary : AppColors.textSecondary,
-                fontSize: 13,
-                fontWeight: bold ? FontWeight.w700 : FontWeight.normal,
-              )),
+          Text(
+            label,
+            style: TextStyle(
+              color: bold ? AppColors.textPrimary : AppColors.textSecondary,
+              fontSize: 13,
+              fontWeight: bold ? FontWeight.w700 : FontWeight.normal,
+            ),
+          ),
           const SizedBox(width: 8),
           if (detail != null)
             Expanded(
-              child: Text(detail,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: AppColors.textSecondary, fontSize: 11)),
+              child: Text(
+                detail,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
+              ),
             )
           else
             const Spacer(),
-          Text(value,
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 13,
-                fontWeight: bold ? FontWeight.w700 : FontWeight.w600,
-              )),
+          Text(
+            value,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 13,
+              fontWeight: bold ? FontWeight.w700 : FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
@@ -243,13 +273,13 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        text,
-        style: const TextStyle(
-          color: AppColors.textSecondary,
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-        ),
-      );
+    text,
+    style: TextStyle(
+      color: AppColors.textSecondary,
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+    ),
+  );
 }
 
 class _TableRow {
@@ -286,11 +316,18 @@ class _Table extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 6),
             child: Row(
               children: [
-                Expanded(child: _text(header.first, AppColors.textSecondary, 11)),
+                Expanded(
+                  child: _text(header.first, AppColors.textSecondary, 11),
+                ),
                 for (var i = 1; i < header.length; i++)
                   SizedBox(
                     width: _widths[i - 1],
-                    child: _text(header[i], AppColors.textSecondary, 11, right: true),
+                    child: _text(
+                      header[i],
+                      AppColors.textSecondary,
+                      11,
+                      right: true,
+                    ),
                   ),
               ],
             ),
@@ -298,7 +335,7 @@ class _Table extends StatelessWidget {
           for (final r in rows)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: AppColors.border)),
               ),
               child: Row(
@@ -312,17 +349,23 @@ class _Table extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: r.highlight ? AppColors.green : AppColors.textPrimary,
+                            color: r.highlight
+                                ? AppColors.green
+                                : AppColors.textPrimary,
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         if (r.subtitle != null)
-                          Text(r.subtitle!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                  color: AppColors.textSecondary, fontSize: 11)),
+                          Text(
+                            r.subtitle!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 11,
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -331,7 +374,9 @@ class _Table extends StatelessWidget {
                       width: _widths[i],
                       child: _text(
                         r.cells[i],
-                        i == 0 ? AppColors.textPrimary : AppColors.textSecondary,
+                        i == 0
+                            ? AppColors.textPrimary
+                            : AppColors.textSecondary,
                         13,
                         right: true,
                         bold: i == 0,
@@ -345,14 +390,19 @@ class _Table extends StatelessWidget {
     );
   }
 
-  Widget _text(String t, Color c, double size, {bool right = false, bool bold = false}) =>
-      Text(
-        t,
-        textAlign: right ? TextAlign.right : TextAlign.left,
-        style: TextStyle(
-          color: c,
-          fontSize: size,
-          fontWeight: bold ? FontWeight.w700 : FontWeight.normal,
-        ),
-      );
+  Widget _text(
+    String t,
+    Color c,
+    double size, {
+    bool right = false,
+    bool bold = false,
+  }) => Text(
+    t,
+    textAlign: right ? TextAlign.right : TextAlign.left,
+    style: TextStyle(
+      color: c,
+      fontSize: size,
+      fontWeight: bold ? FontWeight.w700 : FontWeight.normal,
+    ),
+  );
 }

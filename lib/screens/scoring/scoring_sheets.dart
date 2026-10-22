@@ -31,7 +31,7 @@ class WicketInput {
 
 Widget _sheetTitle(String text) => Text(
   text,
-  style: const TextStyle(
+  style: TextStyle(
     color: AppColors.textPrimary,
     fontSize: 17,
     fontWeight: FontWeight.w700,
@@ -42,7 +42,7 @@ Widget _label(String text) => Padding(
   padding: const EdgeInsets.only(top: 16, bottom: 8),
   child: Text(
     text,
-    style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+    style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
   ),
 );
 
@@ -50,9 +50,11 @@ Widget _chip({
   required String label,
   required bool selected,
   required VoidCallback? onTap,
-  Color color = AppColors.green,
-  Color darkColor = AppColors.greenDark,
+  Color? color,
+  Color? darkColor,
 }) {
+  color ??= AppColors.green;
+  darkColor ??= AppColors.greenDark;
   return GestureDetector(
     onTap: onTap,
     child: AnimatedContainer(
@@ -92,7 +94,7 @@ Widget _primaryButton(String label, VoidCallback? onPressed) => SizedBox(
     child: Text(
       label,
       style: TextStyle(
-        color: onPressed == null ? AppColors.textSecondary : Colors.black,
+        color: onPressed == null ? AppColors.textSecondary : AppColors.onAccent,
         fontWeight: FontWeight.w700,
         fontSize: 15,
       ),
@@ -153,13 +155,13 @@ Future<WicketInput?> showWicketSheet(BuildContext context, ScoringState state) {
           children: [
             Row(
               children: [
-                const Icon(Icons.close_rounded, color: AppColors.red),
+                Icon(Icons.close_rounded, color: AppColors.red),
                 const SizedBox(width: 6),
                 _sheetTitle('Wicket! How out?'),
               ],
             ),
             if (freeHit)
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(top: 6),
                 child: Text(
                   'Free hit — only a run out is allowed',
@@ -239,7 +241,7 @@ Future<WicketInput?> showWicketSheet(BuildContext context, ScoringState state) {
                     .toList(),
               ),
             ] else
-              const Padding(
+              Padding(
                 padding: EdgeInsets.only(top: 16),
                 child: Text(
                   'Last wicket — this ends the innings',
@@ -287,10 +289,7 @@ Future<int?> showExtraRunsSheet(
           const SizedBox(height: 4),
           Text(
             subtitle,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
           ),
           const SizedBox(height: 16),
           GridView.count(
@@ -311,7 +310,7 @@ Future<int?> showExtraRunsSheet(
                       child: Center(
                         child: Text(
                           labelFor(r),
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.amber,
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
@@ -349,10 +348,7 @@ Future<String?> showBowlerSheet(BuildContext context, ScoringState state) {
           const SizedBox(height: 4),
           Text(
             '${state.scoreDisplay} after ${state.oversDisplay} overs',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
           ),
           const SizedBox(height: 14),
           ...bowlers.map((p) {
@@ -393,14 +389,14 @@ Future<String?> showBowlerSheet(BuildContext context, ScoringState state) {
                       ),
                     ),
                     if (isLast)
-                      const Text(
+                      Text(
                         'Bowled last over',
                         style: TextStyle(color: AppColors.amber, fontSize: 11),
                       )
                     else if (row != null)
                       Text(
                         '${row.oversText}-${row.maidens}-${row.runs}-${row.wickets}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,
                         ),
@@ -501,10 +497,7 @@ class _OpenersCardState extends State<OpenersCard> {
           const SizedBox(height: 4),
           Text(
             '${s.battingTeamName} bat · ${s.bowlingTeamName} bowl',
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
           ),
           _pickRow(
             'Striker (faces first ball)',

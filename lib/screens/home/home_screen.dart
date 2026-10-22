@@ -28,12 +28,9 @@ class HomeScreen extends StatelessWidget {
             // ── App name + settings ───────────────────────────
             Row(
               children: [
-                Hero(
-                  tag: 'app-logo',
-                  child: const AppLogo(size: 44),
-                ),
+                Hero(tag: 'app-logo', child: const AppLogo(size: 44)),
                 const SizedBox(width: 10),
-                const Expanded(
+                Expanded(
                   child: Text(
                     'PitchScore',
                     style: TextStyle(
@@ -45,7 +42,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () => context.push('/settings'),
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.settings_outlined,
                     color: AppColors.textSecondary,
                   ),
@@ -76,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.play_circle_fill,
                               color: AppColors.amber,
                               size: 36,
@@ -86,7 +83,7 @@ class HomeScreen extends StatelessWidget {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Resume match',
                                     style: TextStyle(
                                       color: AppColors.amber,
@@ -99,7 +96,7 @@ class HomeScreen extends StatelessWidget {
                                     '${active.battingTeamName} ${active.scoreDisplay} (${active.oversDisplay})',
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: AppColors.textPrimary,
                                       fontSize: 13,
                                     ),
@@ -107,10 +104,7 @@ class HomeScreen extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            const Icon(
-                              Icons.chevron_right,
-                              color: AppColors.amber,
-                            ),
+                            Icon(Icons.chevron_right, color: AppColors.amber),
                           ],
                         ),
                       ),
@@ -125,11 +119,11 @@ class HomeScreen extends StatelessWidget {
               height: 60,
               child: ElevatedButton.icon(
                 onPressed: () => context.push('/setup'),
-                icon: const Icon(Icons.add, color: Colors.black),
-                label: const Text(
+                icon: Icon(Icons.add, color: AppColors.onAccent),
+                label: Text(
                   'New Match',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: AppColors.onAccent,
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
                   ),
@@ -175,7 +169,7 @@ class HomeScreen extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Recent match',
                       style: TextStyle(
                         color: AppColors.textSecondary,
@@ -190,7 +184,7 @@ class HomeScreen extends StatelessWidget {
               },
             ),
             const SizedBox(height: 24),
-            const Center(
+            Center(
               child: Text(
                 'Score · Share · Celebrate',
                 style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
@@ -215,10 +209,10 @@ class HomeScreen extends StatelessWidget {
         icon: Icon(icon, color: iconColor),
         label: Text(
           label,
-          style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+          style: TextStyle(color: AppColors.textPrimary, fontSize: 14),
         ),
         style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: AppColors.border),
+          side: BorderSide(color: AppColors.border),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -237,7 +231,7 @@ class HomeScreen extends StatelessWidget {
             backgroundColor: AppColors.greenDark,
             child: Text(
               n,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.green,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
@@ -248,10 +242,7 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 13,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
             ),
           ),
         ],
@@ -267,7 +258,7 @@ class HomeScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'How it works',
             style: TextStyle(
               color: AppColors.textPrimary,

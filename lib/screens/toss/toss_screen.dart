@@ -134,7 +134,7 @@ class _TossScreenState extends State<TossScreen>
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Toss',
           style: TextStyle(
             color: AppColors.textPrimary,
@@ -142,7 +142,7 @@ class _TossScreenState extends State<TossScreen>
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => context.pop(),
         ),
       ),
@@ -161,7 +161,7 @@ class _TossScreenState extends State<TossScreen>
 
                     // ── Who is calling ──────────────────────────────
                     if (!_tossComplete) ...[
-                      const Text(
+                      Text(
                         'Who is calling?',
                         style: TextStyle(
                           color: AppColors.textSecondary,
@@ -185,7 +185,7 @@ class _TossScreenState extends State<TossScreen>
                       const SizedBox(height: 16),
                       Text(
                         '${_teamName(_callingTeam)} calls...',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 14,
                         ),
@@ -277,7 +277,7 @@ class _TossScreenState extends State<TossScreen>
 
                     // ── Tap to flip hint ────────────────────────────
                     if (!_isFlipping && !_tossComplete)
-                      const Text(
+                      Text(
                         'Tap coin to flip!',
                         style: TextStyle(
                           color: AppColors.textSecondary,
@@ -300,7 +300,7 @@ class _TossScreenState extends State<TossScreen>
                           children: [
                             Text(
                               _tossResult,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.green,
                                 fontSize: 28,
                                 fontWeight: FontWeight.w800,
@@ -310,7 +310,7 @@ class _TossScreenState extends State<TossScreen>
                             const SizedBox(height: 4),
                             Text(
                               '${_teamName(_tossWinner)} wins the toss!',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.textPrimary,
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
@@ -325,7 +325,7 @@ class _TossScreenState extends State<TossScreen>
                       // ── Bat or Bowl choice ──────────────────────
                       Text(
                         '${_teamName(_tossWinner)} chooses to...',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 13,
                         ),
@@ -340,7 +340,7 @@ class _TossScreenState extends State<TossScreen>
                       ),
                       TextButton(
                         onPressed: _reflip,
-                        child: const Text(
+                        child: Text(
                           'Flip again',
                           style: TextStyle(color: AppColors.textSecondary),
                         ),
@@ -371,7 +371,7 @@ class _TossScreenState extends State<TossScreen>
                                 : 'Choose bat or bowl first',
                             style: TextStyle(
                               color: _tossChoice.isNotEmpty
-                                  ? Colors.black
+                                  ? AppColors.onAccent
                                   : AppColors.textSecondary,
                               fontWeight: FontWeight.w700,
                               fontSize: 15,

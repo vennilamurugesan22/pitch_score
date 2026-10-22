@@ -59,7 +59,7 @@ class ScorecardScreen extends StatelessWidget {
           child: Text(
             state.resultText,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.amber,
               fontWeight: FontWeight.w700,
               fontSize: 15,

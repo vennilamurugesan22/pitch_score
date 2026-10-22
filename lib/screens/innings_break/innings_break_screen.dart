@@ -38,7 +38,7 @@ class InningsBreakScreen extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () => context.push('/scorecard', extra: s),
-                  child: const Text(
+                  child: Text(
                     'Scorecard',
                     style: TextStyle(color: AppColors.green),
                   ),
@@ -53,7 +53,7 @@ class InningsBreakScreen extends StatelessWidget {
                   Text(
                     s.teamName(s.battingFirstId),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 14,
                     ),
@@ -62,7 +62,7 @@ class InningsBreakScreen extends StatelessWidget {
                   Text(
                     '${first.scoreText}  (${first.oversText} ov)',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 32,
                       fontWeight: FontWeight.w800,
@@ -80,7 +80,7 @@ class InningsBreakScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        const Text(
+                        Text(
                           'TARGET',
                           style: TextStyle(
                             color: AppColors.amber,
@@ -91,7 +91,7 @@ class InningsBreakScreen extends StatelessWidget {
                         ),
                         Text(
                               '$target',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.amber,
                                 fontSize: 80,
                                 fontWeight: FontWeight.w900,
@@ -108,14 +108,14 @@ class InningsBreakScreen extends StatelessWidget {
                         Text(
                           '$chasing need $target in ${s.totalOvers * 6} balls',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 14,
                           ),
                         ),
                         Text(
                           'Required rate ${(target / s.totalOvers).toStringAsFixed(2)}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: 12,
                           ),
@@ -155,10 +155,10 @@ class InningsBreakScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Start 2nd Innings',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: AppColors.onAccent,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                         ),
@@ -171,7 +171,7 @@ class InningsBreakScreen extends StatelessWidget {
                       bloc.add(const UndoBallEvent());
                       context.pop();
                     },
-                    child: const Text(
+                    child: Text(
                       'Made a mistake? Undo last ball',
                       style: TextStyle(color: AppColors.textSecondary),
                     ),
@@ -189,7 +189,7 @@ class InningsBreakScreen extends StatelessWidget {
     padding: const EdgeInsets.only(bottom: 6),
     child: Text(
       t,
-      style: const TextStyle(
+      style: TextStyle(
         color: AppColors.textSecondary,
         fontSize: 12,
         fontWeight: FontWeight.w600,
@@ -211,15 +211,12 @@ class InningsBreakScreen extends StatelessWidget {
           child: Text(
             name,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: AppColors.textPrimary),
+            style: TextStyle(color: AppColors.textPrimary),
           ),
         ),
         Text(
           value,
-          style: const TextStyle(
-            color: AppColors.green,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyle(color: AppColors.green, fontWeight: FontWeight.w700),
         ),
       ],
     ),

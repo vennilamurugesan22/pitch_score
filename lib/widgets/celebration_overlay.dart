@@ -63,7 +63,12 @@ class CelebrationOverlayState extends State<CelebrationOverlay>
   void play(Celebration type) {
     HapticFeedback.heavyImpact();
     final colors = switch (type) {
-      Celebration.six => [AppColors.blue, Colors.white, AppColors.amber, AppColors.green],
+      Celebration.six => [
+        AppColors.blue,
+        Colors.white,
+        AppColors.amber,
+        AppColors.green,
+      ],
       Celebration.four => [AppColors.green, Colors.white, AppColors.amber],
       Celebration.wicket => [AppColors.red, Colors.white, AppColors.amber],
     };
@@ -130,7 +135,8 @@ class CelebrationOverlayState extends State<CelebrationOverlay>
     // Text: elastic pop after impact, then fade
     final textT = ((ms - impactMs) / 600).clamp(0.0, 1.0);
     final textScale = Curves.elasticOut.transform(textT) * 1.0;
-    final shake = type == Celebration.wicket && ms > impactMs && ms < impactMs + 400
+    final shake =
+        type == Celebration.wicket && ms > impactMs && ms < impactMs + 400
         ? sin((ms - impactMs) / 25) * 10
         : 0.0;
 
@@ -190,24 +196,27 @@ class CelebrationOverlayState extends State<CelebrationOverlay>
                         shadows: [
                           Shadow(color: color, blurRadius: 30),
                           const Shadow(
-                              color: Colors.black54,
-                              offset: Offset(3, 4),
-                              blurRadius: 4),
+                            color: Colors.black54,
+                            offset: Offset(3, 4),
+                            blurRadius: 4,
+                          ),
                         ],
                       ),
                     ),
                     if (type != Celebration.wicket)
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 4),
+                          horizontal: 14,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: color,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
                           type == Celebration.six ? '+6 RUNS' : '+4 RUNS',
-                          style: const TextStyle(
-                            color: Colors.black,
+                          style: TextStyle(
+                            color: AppColors.onAccent,
                             fontWeight: FontWeight.w800,
                             letterSpacing: 1,
                           ),
@@ -279,8 +288,8 @@ class _ScenePainter extends CustomPainter {
 
     // Contact point on the blade (where the bat is at impact)
     const contactAngle = -0.35;
-    final contact = pivot +
-        Offset(-sin(contactAngle), cos(contactAngle)) * (batLen * 0.72);
+    final contact =
+        pivot + Offset(-sin(contactAngle), cos(contactAngle)) * (batLen * 0.72);
 
     if (ms < impactMs) {
       // Ball arriving from the bowler (right side, low)
@@ -306,7 +315,10 @@ class _ScenePainter extends CustomPainter {
     Offset ballAt(double f) {
       final end = Offset(size.width * 1.1, -size.height * 0.15);
       final x = contact.dx + (end.dx - contact.dx) * f;
-      final y = contact.dy + (end.dy - contact.dy) * f - sin(pi * f) * size.height * 0.12;
+      final y =
+          contact.dy +
+          (end.dy - contact.dy) * f -
+          sin(pi * f) * size.height * 0.12;
       return Offset(x, y);
     }
 
@@ -331,7 +343,9 @@ class _ScenePainter extends CustomPainter {
     canvas.rotate(angle);
     // Handle with grip stripes
     final handle = RRect.fromRectAndRadius(
-        const Rect.fromLTWH(-6, 0, 12, 52), const Radius.circular(5));
+      const Rect.fromLTWH(-6, 0, 12, 52),
+      const Radius.circular(5),
+    );
     canvas.drawRRect(handle, Paint()..color = const Color(0xFF263238));
     final stripe = Paint()
       ..color = AppColors.green
@@ -341,7 +355,9 @@ class _ScenePainter extends CustomPainter {
     }
     // Blade
     final blade = RRect.fromRectAndRadius(
-        Rect.fromLTWH(-18, 50, 36, len - 50), const Radius.circular(10));
+      Rect.fromLTWH(-18, 50, 36, len - 50),
+      const Radius.circular(10),
+    );
     canvas.drawRRect(
       blade,
       Paint()
@@ -353,7 +369,9 @@ class _ScenePainter extends CustomPainter {
     final sticker = Paint()..color = AppColors.green.withValues(alpha: 0.85);
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-          Rect.fromLTWH(-12, 62, 24, 26), const Radius.circular(4)),
+        Rect.fromLTWH(-12, 62, 24, 26),
+        const Radius.circular(4),
+      ),
       sticker,
     );
     canvas.restore();
@@ -414,7 +432,12 @@ class _ScenePainter extends CustomPainter {
     if (!hit) {
       final p = ms / impactMs;
       final start = Offset(-20, base.dy - 90);
-      _paintBall(canvas, Offset.lerp(start, base + const Offset(-6, -55), p)!, 13, ms / 30);
+      _paintBall(
+        canvas,
+        Offset.lerp(start, base + const Offset(-6, -55), p)!,
+        13,
+        ms / 30,
+      );
     }
 
     // Three stumps, scattering after the hit
@@ -429,7 +452,9 @@ class _ScenePainter extends CustomPainter {
       canvas.translate(base.dx + (i - 1) * 22, base.dy);
       canvas.rotate(tilts[i] * fall);
       final r = RRect.fromRectAndRadius(
-          const Rect.fromLTWH(-5, -stumpH, 10, stumpH), const Radius.circular(4));
+        const Rect.fromLTWH(-5, -stumpH, 10, stumpH),
+        const Radius.circular(4),
+      );
       canvas.drawRRect(r, stump);
       canvas.drawRRect(r, edge);
       canvas.restore();
@@ -449,8 +474,9 @@ class _ScenePainter extends CustomPainter {
       canvas.rotate(dir * since / 60);
       canvas.drawRRect(
         RRect.fromRectAndRadius(
-            const Rect.fromLTWH(-12, -3, 24, 6),
-            const Radius.circular(3)),
+          const Rect.fromLTWH(-12, -3, 24, 6),
+          const Radius.circular(3),
+        ),
         bail,
       );
       canvas.restore();
@@ -478,10 +504,20 @@ class _ScenePainter extends CustomPainter {
       ..color = Colors.white.withValues(alpha: 0.85)
       ..strokeWidth = 1.4
       ..style = PaintingStyle.stroke;
-    canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: r * 0.7),
-        -pi / 3, 2 * pi / 3, false, seam);
-    canvas.drawArc(Rect.fromCircle(center: Offset.zero, radius: r * 0.7),
-        2 * pi / 3, 2 * pi / 3, false, seam);
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset.zero, radius: r * 0.7),
+      -pi / 3,
+      2 * pi / 3,
+      false,
+      seam,
+    );
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset.zero, radius: r * 0.7),
+      2 * pi / 3,
+      2 * pi / 3,
+      false,
+      seam,
+    );
     canvas.restore();
   }
 
@@ -497,8 +533,13 @@ class _ScenePainter extends CustomPainter {
         canvas.translate(pos.dx, pos.dy);
         canvas.rotate(p.spin * s);
         canvas.drawRect(
-            Rect.fromCenter(center: Offset.zero, width: p.size, height: p.size * 0.5),
-            paint);
+          Rect.fromCenter(
+            center: Offset.zero,
+            width: p.size,
+            height: p.size * 0.5,
+          ),
+          paint,
+        );
         canvas.restore();
       } else {
         canvas.drawCircle(pos, p.size / 2, paint);

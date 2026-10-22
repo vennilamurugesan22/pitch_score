@@ -164,7 +164,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Match Setup',
           style: TextStyle(
             color: AppColors.textPrimary,
@@ -172,7 +172,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary),
           onPressed: () => context.pop(),
         ),
       ),
@@ -232,7 +232,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
                   height: 44,
                   child: OutlinedButton.icon(
                     onPressed: () => _pickFromContacts(context),
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.contacts_outlined,
                       color: AppColors.green,
                       size: 18,
@@ -240,13 +240,13 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
                     label: Text(
                       'Add from contacts to ${_teamLabel(state, _addingToTeam)}',
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 13,
                       ),
                     ),
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: AppColors.border),
+                      side: BorderSide(color: AppColors.border),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -287,7 +287,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         color: AppColors.textSecondary,
         fontSize: 13,
         fontWeight: FontWeight.w500,
@@ -307,23 +307,23 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
       enableSuggestions: false,
       textCapitalization: TextCapitalization.words,
       onChanged: onChanged,
-      style: const TextStyle(color: AppColors.textPrimary),
+      style: TextStyle(color: AppColors.textPrimary),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(color: AppColors.textHint),
+        hintStyle: TextStyle(color: AppColors.textHint),
         filled: true,
         fillColor: AppColors.surface,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: AppColors.green, width: 1.5),
+          borderSide: BorderSide(color: AppColors.green, width: 1.5),
         ),
       ),
     );
@@ -458,13 +458,10 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
             textCapitalization: TextCapitalization.words,
             textInputAction: TextInputAction.done,
             onSubmitted: (_) => _addPlayerFromField(context),
-            style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
+            style: TextStyle(color: AppColors.textPrimary, fontSize: 13),
             decoration: InputDecoration(
               hintText: 'Player name',
-              hintStyle: const TextStyle(
-                color: AppColors.textHint,
-                fontSize: 13,
-              ),
+              hintStyle: TextStyle(color: AppColors.textHint, fontSize: 13),
               filled: true,
               fillColor: AppColors.surface,
               contentPadding: const EdgeInsets.symmetric(
@@ -473,15 +470,15 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppColors.border),
+                borderSide: BorderSide(color: AppColors.border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppColors.border),
+                borderSide: BorderSide(color: AppColors.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppColors.green),
+                borderSide: BorderSide(color: AppColors.green),
               ),
             ),
           ),
@@ -495,7 +492,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
               color: AppColors.green,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.add, color: Colors.black, size: 20),
+            child: Icon(Icons.add, color: AppColors.onAccent, size: 20),
           ),
         ),
       ],
@@ -523,7 +520,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               border: index < state.players.length - 1
-                  ? const Border(bottom: BorderSide(color: AppColors.border))
+                  ? Border(bottom: BorderSide(color: AppColors.border))
                   : null,
             ),
             child: Row(
@@ -554,7 +551,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
                   child: Text(
                     player.name,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 13,
                     ),
@@ -593,7 +590,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
                   visualDensity: VisualDensity.compact,
                   onPressed: () =>
                       context.read<MatchSetupCubit>().removePlayer(player.id),
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.close,
                     color: AppColors.textSecondary,
                     size: 18,
@@ -663,9 +660,9 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
         children: [
           Row(
             children: [
-              const Icon(Icons.wifi, color: AppColors.green, size: 20),
+              Icon(Icons.wifi, color: AppColors.green, size: 20),
               const SizedBox(width: 10),
-              const Expanded(
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -709,7 +706,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'Match Code: ',
                     style: TextStyle(
                       color: AppColors.textSecondary,
@@ -718,7 +715,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
                   ),
                   Text(
                     state.matchCode,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.green,
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -729,7 +726,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Share this code on WhatsApp — anyone can watch live!',
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
@@ -764,7 +761,7 @@ class _MatchSetupBodyState extends State<_MatchSetupBody> {
               ? 'Proceed to Toss 🏏'
               : 'Add team names + min 2 players each',
           style: TextStyle(
-            color: isValid ? Colors.black : AppColors.textSecondary,
+            color: isValid ? AppColors.onAccent : AppColors.textSecondary,
             fontWeight: FontWeight.w600,
             fontSize: 14,
           ),
@@ -801,7 +798,7 @@ class _ContactPickerState extends State<_ContactPicker> {
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
               'Add to ${widget.teamName}',
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
@@ -812,14 +809,11 @@ class _ContactPickerState extends State<_ContactPicker> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextField(
               onChanged: (v) => setState(() => _query = v),
-              style: const TextStyle(color: AppColors.textPrimary),
+              style: TextStyle(color: AppColors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Search contacts',
-                hintStyle: const TextStyle(color: AppColors.textHint),
-                prefixIcon: const Icon(
-                  Icons.search,
-                  color: AppColors.textSecondary,
-                ),
+                hintStyle: TextStyle(color: AppColors.textHint),
+                prefixIcon: Icon(Icons.search, color: AppColors.textSecondary),
                 filled: true,
                 fillColor: AppColors.background,
                 border: OutlineInputBorder(
@@ -838,10 +832,10 @@ class _ContactPickerState extends State<_ContactPicker> {
                 return CheckboxListTile(
                   value: checked,
                   activeColor: AppColors.green,
-                  checkColor: Colors.black,
+                  checkColor: AppColors.onAccent,
                   title: Text(
                     name,
-                    style: const TextStyle(color: AppColors.textPrimary),
+                    style: TextStyle(color: AppColors.textPrimary),
                   ),
                   onChanged: (v) => setState(() {
                     v == true ? _selected.add(name) : _selected.remove(name);
@@ -875,7 +869,7 @@ class _ContactPickerState extends State<_ContactPicker> {
                     style: TextStyle(
                       color: _selected.isEmpty
                           ? AppColors.textSecondary
-                          : Colors.black,
+                          : AppColors.onAccent,
                       fontWeight: FontWeight.w700,
                     ),
                   ),

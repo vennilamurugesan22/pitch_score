@@ -23,17 +23,17 @@ class MatchHistoryScreen extends StatelessWidget {
             return Center(
               child: Text(
                 state.message,
-                style: const TextStyle(color: AppColors.red),
+                style: TextStyle(color: AppColors.red),
               ),
             );
           }
           if (state is! MatchHistoryLoaded) {
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(color: AppColors.green),
             );
           }
           if (state.matches.isEmpty) {
-            return const Center(
+            return Center(
               child: Padding(
                 padding: EdgeInsets.all(32),
                 child: Column(
@@ -69,7 +69,7 @@ class MatchHistoryScreen extends StatelessWidget {
             itemCount: state.matches.length + 1,
             itemBuilder: (context, i) {
               if (i == state.matches.length) {
-                return const Padding(
+                return Padding(
                   padding: EdgeInsets.only(top: 8),
                   child: Text(
                     'Swipe a match left to delete it',
@@ -90,27 +90,27 @@ class MatchHistoryScreen extends StatelessWidget {
                     color: AppColors.redDark,
                     borderRadius: BorderRadius.circular(14),
                   ),
-                  child: const Icon(Icons.delete_outline, color: AppColors.red),
+                  child: Icon(Icons.delete_outline, color: AppColors.red),
                 ),
                 confirmDismiss: (_) => showDialog<bool>(
                   context: context,
                   builder: (ctx) => AlertDialog(
                     backgroundColor: AppColors.surface,
-                    title: const Text(
+                    title: Text(
                       'Delete match?',
                       style: TextStyle(color: AppColors.textPrimary),
                     ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, false),
-                        child: const Text(
+                        child: Text(
                           'Cancel',
                           style: TextStyle(color: AppColors.textSecondary),
                         ),
                       ),
                       TextButton(
                         onPressed: () => Navigator.pop(ctx, true),
-                        child: const Text(
+                        child: Text(
                           'Delete',
                           style: TextStyle(color: AppColors.red),
                         ),
@@ -160,7 +160,7 @@ class MatchCard extends StatelessWidget {
         ),
         Text(
           score,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.w700,
             fontSize: 15,
@@ -169,7 +169,7 @@ class MatchCard extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           '($overs)',
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 11),
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
         ),
       ],
     );
@@ -195,7 +195,7 @@ class MatchCard extends StatelessWidget {
                   children: [
                     Text(
                       DateFormat('d MMM yyyy · h:mm a').format(match.matchDate),
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 11,
                       ),
@@ -203,7 +203,7 @@ class MatchCard extends StatelessWidget {
                     const Spacer(),
                     Text(
                       '${match.totalOvers} overs',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 11,
                       ),
@@ -221,7 +221,7 @@ class MatchCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   match.result ?? s.resultText,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.green,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,

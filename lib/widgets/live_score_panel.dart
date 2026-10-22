@@ -67,7 +67,7 @@ class ScoreHeader extends StatelessWidget {
             '${state.battingTeamName} · ${state.currentInnings == 1 ? '1st' : '2nd'} innings',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
           ),
           const SizedBox(height: 4),
           Row(
@@ -87,7 +87,7 @@ class ScoreHeader extends StatelessWidget {
                     child: Text(
                       state.scoreDisplay,
                       key: ValueKey(state.scoreDisplay),
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 52,
                         fontWeight: FontWeight.w800,
@@ -100,7 +100,7 @@ class ScoreHeader extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 '(${state.oversDisplay}/${state.totalOvers})',
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 16),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 16),
               ),
             ],
           ),
@@ -111,7 +111,10 @@ class ScoreHeader extends StatelessWidget {
             children: [
               _mini('CRR', state.currentRunRate.toStringAsFixed(2)),
               _mini('Extras', '${state.extras}'),
-              _mini('P\'ship', '${state.partnershipRuns} (${state.partnershipBalls})'),
+              _mini(
+                'P\'ship',
+                '${state.partnershipRuns} (${state.partnershipBalls})',
+              ),
             ],
           ),
           if (state.isFreeHit && state.canScore) ...[
@@ -123,7 +126,7 @@ class ScoreHeader extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: AppColors.amber),
               ),
-              child: const Text(
+              child: Text(
                 'FREE HIT',
                 style: TextStyle(
                   color: AppColors.amber,
@@ -140,21 +143,23 @@ class ScoreHeader extends StatelessWidget {
   }
 
   Widget _mini(String label, String value) => Text.rich(
-        TextSpan(children: [
-          TextSpan(
-            text: '$label ',
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+    TextSpan(
+      children: [
+        TextSpan(
+          text: '$label ',
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+        ),
+        TextSpan(
+          text: value,
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
           ),
-          TextSpan(
-            text: value,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ]),
-      );
+        ),
+      ],
+    ),
+  );
 }
 
 // ── Target / RRR — 2nd innings only ──────────────────────────────
@@ -172,7 +177,7 @@ class ChaseBar extends StatelessWidget {
             state.runsNeeded == 0
                 ? 'Target reached!'
                 : 'Need ${state.runsNeeded} run${state.runsNeeded == 1 ? '' : 's'} from ${state.ballsRemaining} ball${state.ballsRemaining == 1 ? '' : 's'}',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.amber,
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -183,8 +188,16 @@ class ChaseBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _rateItem('TARGET', '${state.target}', AppColors.amber),
-              _rateItem('CRR', state.currentRunRate.toStringAsFixed(2), AppColors.green),
-              _rateItem('RRR', state.requiredRunRate.toStringAsFixed(2), AppColors.red),
+              _rateItem(
+                'CRR',
+                state.currentRunRate.toStringAsFixed(2),
+                AppColors.green,
+              ),
+              _rateItem(
+                'RRR',
+                state.requiredRunRate.toStringAsFixed(2),
+                AppColors.red,
+              ),
             ],
           ),
         ],
@@ -195,9 +208,19 @@ class ChaseBar extends StatelessWidget {
   Widget _rateItem(String label, String value, Color color) {
     return Column(
       children: [
-        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 10)),
+        Text(
+          label,
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 10),
+        ),
         const SizedBox(height: 2),
-        Text(value, style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w700)),
+        Text(
+          value,
+          style: TextStyle(
+            color: color,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ],
     );
   }
@@ -227,12 +250,12 @@ class ThisOverRow extends StatelessWidget {
             children: [
               Text(
                 showLast && balls.isNotEmpty ? 'Last over' : 'This over',
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 11),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
               ),
               const Spacer(),
               Text(
                 '$overRuns run${overRuns == 1 ? '' : 's'}',
-                style: const TextStyle(color: AppColors.textSecondary, fontSize: 11),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
               ),
             ],
           ),
@@ -269,9 +292,14 @@ class BatsmenCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Expanded(
-                child: Text('Batter',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 11)),
+              Expanded(
+                child: Text(
+                  'Batter',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 11,
+                  ),
+                ),
               ),
               _head('R'),
               _head('B'),
@@ -282,7 +310,7 @@ class BatsmenCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           _row(state.strikerId, true),
-          const Divider(color: AppColors.border, height: 14),
+          Divider(color: AppColors.border, height: 14),
           _row(state.nonStrikerId, false),
           if (onSwapStrike != null && state.canScore) ...[
             const SizedBox(height: 4),
@@ -295,7 +323,10 @@ class BatsmenCard extends StatelessWidget {
                   foregroundColor: AppColors.textSecondary,
                 ),
                 icon: const Icon(Icons.swap_vert, size: 16),
-                label: const Text('Swap strike', style: TextStyle(fontSize: 12)),
+                label: const Text(
+                  'Swap strike',
+                  style: TextStyle(fontSize: 12),
+                ),
               ),
             ),
           ],
@@ -305,27 +336,29 @@ class BatsmenCard extends StatelessWidget {
   }
 
   Widget _head(String t, {double width = 30}) => SizedBox(
-        width: width,
-        child: Text(t,
-            textAlign: TextAlign.right,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 11)),
-      );
+    width: width,
+    child: Text(
+      t,
+      textAlign: TextAlign.right,
+      style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
+    ),
+  );
 
   Widget _row(String id, bool isStriker) {
     final row = state.summary.battingRowFor(id);
     final color = isStriker ? AppColors.textPrimary : AppColors.textSecondary;
     Widget cell(String t, {double width = 30, bool bold = false}) => SizedBox(
-          width: width,
-          child: Text(
-            t,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              color: bold && isStriker ? AppColors.green : color,
-              fontSize: 13,
-              fontWeight: bold ? FontWeight.w700 : FontWeight.normal,
-            ),
-          ),
-        );
+      width: width,
+      child: Text(
+        t,
+        textAlign: TextAlign.right,
+        style: TextStyle(
+          color: bold && isStriker ? AppColors.green : color,
+          fontSize: 13,
+          fontWeight: bold ? FontWeight.w700 : FontWeight.normal,
+        ),
+      ),
+    );
 
     return Row(
       children: [
@@ -372,14 +405,16 @@ class BowlerCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         children: [
-          const Icon(Icons.sports_baseball, color: AppColors.textSecondary, size: 16),
+          Icon(Icons.sports_baseball, color: AppColors.textSecondary, size: 16),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              state.currentBowlerId.isEmpty ? '—' : state.playerName(state.currentBowlerId),
+              state.currentBowlerId.isEmpty
+                  ? '—'
+                  : state.playerName(state.currentBowlerId),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -389,7 +424,7 @@ class BowlerCard extends StatelessWidget {
           // O-M-R-W  Econ
           Text(
             '${row?.oversText ?? '0.0'}-${row?.maidens ?? 0}-${row?.runs ?? 0}-${row?.wickets ?? 0}',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 13,
               fontWeight: FontWeight.w600,
@@ -398,7 +433,7 @@ class BowlerCard extends StatelessWidget {
           const SizedBox(width: 10),
           Text(
             'Econ ${(row?.economy ?? 0).toStringAsFixed(2)}',
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: 11),
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 11),
           ),
         ],
       ),

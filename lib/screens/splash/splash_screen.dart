@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 .then()
                 .rotate(begin: -0.03, end: 0.03, duration: 300.ms),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'PitchScore',
               style: TextStyle(
                 color: AppColors.textPrimary,
@@ -57,12 +57,12 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.3),
             const SizedBox(height: 6),
-            const Text(
+            Text(
               'Score · Share · Celebrate',
               style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ).animate().fadeIn(delay: 600.ms),
             const SizedBox(height: 40),
-            const SizedBox(
+            SizedBox(
               width: 22,
               height: 22,
               child: CircularProgressIndicator(

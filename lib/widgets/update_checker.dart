@@ -38,11 +38,15 @@ class _UpdateCheckerState extends State<UpdateChecker> {
           backgroundColor: AppColors.surface,
           title: Row(
             children: [
-              Icon(force ? Icons.system_update : Icons.new_releases_outlined,
-                  color: force ? AppColors.amber : AppColors.green),
+              Icon(
+                force ? Icons.system_update : Icons.new_releases_outlined,
+                color: force ? AppColors.amber : AppColors.green,
+              ),
               const SizedBox(width: 8),
-              Text(force ? 'Update required' : 'Update available',
-                  style: const TextStyle(color: AppColors.textPrimary)),
+              Text(
+                force ? 'Update required' : 'Update available',
+                style: TextStyle(color: AppColors.textPrimary),
+              ),
             ],
           ),
           content: Column(
@@ -53,12 +57,14 @@ class _UpdateCheckerState extends State<UpdateChecker> {
                 force
                     ? 'This version (${info.currentVersion}) is no longer supported. Please update to keep scoring.'
                     : 'PitchScore ${info.latestVersion} is available — you have ${info.currentVersion}.',
-                style: const TextStyle(color: AppColors.textSecondary),
+                style: TextStyle(color: AppColors.textSecondary),
               ),
               if (info.message.isNotEmpty) ...[
                 const SizedBox(height: 10),
-                Text(info.message,
-                    style: const TextStyle(color: AppColors.textPrimary)),
+                Text(
+                  info.message,
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
               ],
             ],
           ),
@@ -69,15 +75,21 @@ class _UpdateCheckerState extends State<UpdateChecker> {
                   _service.skip(info.latestVersion);
                   Navigator.pop(ctx);
                 },
-                child: const Text('Later',
-                    style: TextStyle(color: AppColors.textSecondary)),
+                child: Text(
+                  'Later',
+                  style: TextStyle(color: AppColors.textSecondary),
+                ),
               ),
             ElevatedButton(
               onPressed: () => _openStore(info.storeUrl),
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
-              child: const Text('Update now',
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w700)),
+              child: Text(
+                'Update now',
+                style: TextStyle(
+                  color: AppColors.onAccent,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ],
         ),

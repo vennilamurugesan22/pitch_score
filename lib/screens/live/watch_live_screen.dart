@@ -147,7 +147,7 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
             if (_code != null && _live != null)
               IconButton(
                 tooltip: 'Share',
-                icon: const Icon(Icons.share, color: AppColors.green),
+                icon: Icon(Icons.share, color: AppColors.green),
                 onPressed: () => SharePlus.instance.share(
                   ShareParams(
                     text: LiveLink.shareText(
@@ -179,9 +179,9 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
       padding: const EdgeInsets.all(24),
       children: [
         const SizedBox(height: 24),
-        const Icon(Icons.wifi_tethering, color: AppColors.green, size: 56),
+        Icon(Icons.wifi_tethering, color: AppColors.green, size: 56),
         const SizedBox(height: 16),
-        const Text(
+        Text(
           'Enter the match code',
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -191,7 +191,7 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
           ),
         ),
         const SizedBox(height: 6),
-        const Text(
+        Text(
           'Ask the scorer for the 6-digit code shown on their screen',
           textAlign: TextAlign.center,
           style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
@@ -207,7 +207,7 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
           textAlign: TextAlign.center,
           autofocus: widget.initialCode == null,
           onSubmitted: (_) => _join(),
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.green,
             fontSize: 32,
             fontWeight: FontWeight.w800,
@@ -215,25 +215,22 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
           ),
           decoration: InputDecoration(
             hintText: '000000',
-            hintStyle: const TextStyle(
-              color: AppColors.textHint,
-              letterSpacing: 10,
-            ),
+            hintStyle: TextStyle(color: AppColors.textHint, letterSpacing: 10),
             filled: true,
             fillColor: AppColors.surface,
             errorText: _error,
             errorMaxLines: 2,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: AppColors.green, width: 1.5),
+              borderSide: BorderSide(color: AppColors.green, width: 1.5),
             ),
           ),
         ),
@@ -249,18 +246,18 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
               ),
             ),
             child: _checking
-                ? const SizedBox(
+                ? SizedBox(
                     width: 22,
                     height: 22,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.5,
-                      color: Colors.black,
+                      color: AppColors.onAccent,
                     ),
                   )
-                : const Text(
+                : Text(
                     'Watch',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: AppColors.onAccent,
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                     ),
@@ -283,9 +280,7 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
     final s = _live;
     if (s == null) {
       return _waiting
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.green),
-            )
+          ? Center(child: CircularProgressIndicator(color: AppColors.green))
           : _message(
               Icons.hourglass_empty,
               'Waiting for the first ball',
@@ -298,7 +293,7 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
         Text(
           '${s.teamOneName} vs ${s.teamTwoName}',
           textAlign: TextAlign.center,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textPrimary,
             fontSize: 17,
             fontWeight: FontWeight.w800,
@@ -323,10 +318,7 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
             child: Text(
               '${s.teamName(s.battingFirstId)}: ${s.firstInningsSummary.scoreText} (${s.firstInningsSummary.oversText})',
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 12,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
             ),
           ),
         LiveScorePanel(state: s),
@@ -339,16 +331,13 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
           height: 50,
           child: OutlinedButton.icon(
             onPressed: () => context.push('/scorecard', extra: s),
-            icon: const Icon(
-              Icons.table_chart_outlined,
-              color: AppColors.green,
-            ),
-            label: const Text(
+            icon: Icon(Icons.table_chart_outlined, color: AppColors.green),
+            label: Text(
               'Full scorecard',
               style: TextStyle(color: AppColors.textPrimary),
             ),
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppColors.border),
+              side: BorderSide(color: AppColors.border),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -377,7 +366,7 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
           const SizedBox(height: 12),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -387,7 +376,7 @@ class _WatchLiveScreenState extends State<WatchLiveScreen> {
           Text(
             body,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: AppColors.textSecondary),
+            style: TextStyle(color: AppColors.textSecondary),
           ),
         ],
       ),
@@ -407,18 +396,11 @@ class _ViewersChip extends StatelessWidget {
         padding: const EdgeInsets.only(right: 12),
         child: Row(
           children: [
-            const Icon(
-              Icons.visibility,
-              size: 16,
-              color: AppColors.textSecondary,
-            ),
+            Icon(Icons.visibility, size: 16, color: AppColors.textSecondary),
             const SizedBox(width: 4),
             Text(
               '${snap.data ?? 1} watching',
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 12,
-              ),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
             ),
           ],
         ),

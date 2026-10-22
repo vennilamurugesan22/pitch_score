@@ -13,43 +13,54 @@ class LiveBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: AppColors.red,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(color: AppColors.red.withValues(alpha: 0.5), blurRadius: 12),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-          )
-              .animate(onPlay: (c) => c.repeat(reverse: true))
-              .fade(begin: 1, end: 0.2, duration: 700.ms)
-              .scale(begin: const Offset(1, 1), end: const Offset(0.6, 0.6)),
-          const SizedBox(width: 6),
-          Text(
-            code == null ? 'LIVE' : 'LIVE · $code',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w900,
-              letterSpacing: 1.5,
-            ),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          decoration: BoxDecoration(
+            color: AppColors.red,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.red.withValues(alpha: 0.5),
+                blurRadius: 12,
+              ),
+            ],
           ),
-        ],
-      ),
-    )
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  )
+                  .animate(onPlay: (c) => c.repeat(reverse: true))
+                  .fade(begin: 1, end: 0.2, duration: 700.ms)
+                  .scale(
+                    begin: const Offset(1, 1),
+                    end: const Offset(0.6, 0.6),
+                  ),
+              const SizedBox(width: 6),
+              Text(
+                code == null ? 'LIVE' : 'LIVE · $code',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                ),
+              ),
+            ],
+          ),
+        )
         .animate(onPlay: (c) => c.repeat(reverse: true))
-        .scaleXY(begin: 1, end: 1.06, duration: 900.ms, curve: Curves.easeInOut);
+        .scaleXY(
+          begin: 1,
+          end: 1.06,
+          duration: 900.ms,
+          curve: Curves.easeInOut,
+        );
   }
 }
 
@@ -106,9 +117,13 @@ class MatchInsights extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(label,
-                      style: const TextStyle(
-                          color: AppColors.textSecondary, fontSize: 10)),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 10,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -148,23 +163,28 @@ class BallByBallFeed extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(Icons.mic_none, color: AppColors.textSecondary, size: 16),
               SizedBox(width: 6),
-              Text('Ball by ball',
-                  style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600)),
+              Text(
+                'Ball by ball',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           if (recent.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 8),
-              child: Text('Waiting for the first ball…',
-                  style: TextStyle(color: AppColors.textHint)),
+              child: Text(
+                'Waiting for the first ball…',
+                style: TextStyle(color: AppColors.textHint),
+              ),
             ),
           for (var k = 0; k < recent.length; k++)
             _row(recent[k], isLatest: k == 0),
@@ -182,38 +202,43 @@ class BallByBallFeed extends StatelessWidget {
         children: [
           SizedBox(
             width: 36,
-            child: Text(over,
-                style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600)),
+            child: Text(
+              over,
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           BallCircle(ball: ball, size: 26),
           const SizedBox(width: 4),
           Expanded(
             child: Text.rich(
-              TextSpan(children: [
-                TextSpan(
-                  text:
-                      '${state.playerName(ball.bowlerId)} to ${state.playerName(ball.batsmanId)}: ',
-                  style: const TextStyle(color: AppColors.textSecondary),
-                ),
-                TextSpan(
-                  text: commentaryFor(ball, index),
-                  style: TextStyle(
-                    color: ball.isWicket
-                        ? AppColors.red
-                        : ball.isSix
-                            ? AppColors.blue
-                            : ball.isFour
-                                ? AppColors.green
-                                : AppColors.textPrimary,
-                    fontWeight: (ball.isWicket || ball.isFour || ball.isSix)
-                        ? FontWeight.w700
-                        : FontWeight.normal,
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text:
+                        '${state.playerName(ball.bowlerId)} to ${state.playerName(ball.batsmanId)}: ',
+                    style: TextStyle(color: AppColors.textSecondary),
                   ),
-                ),
-              ]),
+                  TextSpan(
+                    text: commentaryFor(ball, index),
+                    style: TextStyle(
+                      color: ball.isWicket
+                          ? AppColors.red
+                          : ball.isSix
+                          ? AppColors.blue
+                          : ball.isFour
+                          ? AppColors.green
+                          : AppColors.textPrimary,
+                      fontWeight: (ball.isWicket || ball.isFour || ball.isSix)
+                          ? FontWeight.w700
+                          : FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
               style: const TextStyle(fontSize: 13),
             ),
           ),
@@ -223,9 +248,9 @@ class BallByBallFeed extends StatelessWidget {
     // Newest line slides in
     return isLatest
         ? row
-            .animate(key: ValueKey(index))
-            .fadeIn(duration: 300.ms)
-            .slideX(begin: -0.1)
+              .animate(key: ValueKey(index))
+              .fadeIn(duration: 300.ms)
+              .slideX(begin: -0.1)
         : row;
   }
 
@@ -235,8 +260,14 @@ class BallByBallFeed extends StatelessWidget {
     if (b.isWicket) {
       final who = state.playerName(b.outBatsmanId ?? b.batsmanId);
       return switch (b.wicketType) {
-        'bowled' => pick(['OUT! Clean bowled — $who has to go!', 'OUT! Timber! $who bowled']),
-        'caught' => pick(['OUT! Caught — $who holes out', 'OUT! Taken! $who is caught']),
+        'bowled' => pick([
+          'OUT! Clean bowled — $who has to go!',
+          'OUT! Timber! $who bowled',
+        ]),
+        'caught' => pick([
+          'OUT! Caught — $who holes out',
+          'OUT! Taken! $who is caught',
+        ]),
         'lbw' => 'OUT! Plumb in front — $who LBW',
         'runout' => 'OUT! Run out — $who short of the crease',
         'stumped' => 'OUT! Stumped — $who caught out of the crease',
@@ -244,7 +275,8 @@ class BallByBallFeed extends StatelessWidget {
         _ => 'OUT! $who departs',
       };
     }
-    if (b.isWide) return b.runs > 0 ? 'Wide, and they run ${b.runs}' : 'Wide ball';
+    if (b.isWide)
+      return b.runs > 0 ? 'Wide, and they run ${b.runs}' : 'Wide ball';
     if (b.isNoBall) {
       return b.runs > 0
           ? 'No ball! ${b.runs} off the bat — FREE HIT next'
@@ -253,8 +285,16 @@ class BallByBallFeed extends StatelessWidget {
     if (b.isLegBye) return '${b.runs} leg bye${b.runs == 1 ? '' : 's'}';
     if (b.isBye) return '${b.runs} bye${b.runs == 1 ? '' : 's'}';
     return switch (b.runs) {
-      6 => pick(['SIX! Huge hit into the crowd 🚀', 'SIX! That\'s out of the ground!', 'SIX! Massive!']),
-      4 => pick(['FOUR! Races to the boundary', 'FOUR! Beautiful shot', 'FOUR! Finds the gap']),
+      6 => pick([
+        'SIX! Huge hit into the crowd 🚀',
+        'SIX! That\'s out of the ground!',
+        'SIX! Massive!',
+      ]),
+      4 => pick([
+        'FOUR! Races to the boundary',
+        'FOUR! Beautiful shot',
+        'FOUR! Finds the gap',
+      ]),
       0 => pick(['Dot ball, well bowled', 'No run', 'Defended']),
       1 => pick(['Single taken', 'Pushed for one', 'Quick single']),
       2 => pick(['Two runs', 'Good running, two']),

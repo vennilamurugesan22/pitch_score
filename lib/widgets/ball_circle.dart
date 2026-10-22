@@ -61,10 +61,12 @@ class BallCircle extends StatelessWidget {
 
   static (Color bg, Color fg, double borderWidth) colorsFor(Ball b) {
     if (b.isWicket) return (AppColors.redDark, AppColors.red, 1);
-    if (b.isWide || b.isNoBall) return (AppColors.amberDark, AppColors.amber, 1);
+    if (b.isWide || b.isNoBall)
+      return (AppColors.amberDark, AppColors.amber, 1);
     if (b.isSix) return (AppColors.blueDark, AppColors.blue, 2);
     if (b.isFour) return (AppColors.greenDark, AppColors.green, 2);
-    if (b.totalRuns == 0) return (AppColors.surface, AppColors.textSecondary, 1);
+    if (b.totalRuns == 0)
+      return (AppColors.surface, AppColors.textSecondary, 1);
     return (AppColors.surface, AppColors.green, 1);
   }
 }

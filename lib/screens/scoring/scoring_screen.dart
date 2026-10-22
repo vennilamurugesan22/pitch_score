@@ -106,13 +106,13 @@ class _ScoringBodyState extends State<_ScoringBody> {
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text(
+        title: Text(
           'Match over! 🏆',
           style: TextStyle(color: AppColors.textPrimary),
         ),
         content: Text(
           s.resultText,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.green,
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -121,7 +121,7 @@ class _ScoringBodyState extends State<_ScoringBody> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text(
+            child: Text(
               'Undo last ball',
               style: TextStyle(color: AppColors.textSecondary),
             ),
@@ -129,10 +129,10 @@ class _ScoringBodyState extends State<_ScoringBody> {
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, false),
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
-            child: const Text(
+            child: Text(
               'See result',
               style: TextStyle(
-                color: Colors.black,
+                color: AppColors.onAccent,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -229,25 +229,25 @@ class _ScoringBodyState extends State<_ScoringBody> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text(
+        title: Text(
           'Undo last ball?',
           style: TextStyle(color: AppColors.textPrimary),
         ),
         content: Text(
           '${last.label} — ${s.playerName(last.bowlerId)} to ${s.playerName(last.batsmanId)}',
-          style: const TextStyle(color: AppColors.textSecondary),
+          style: TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(
+            child: Text(
               'Cancel',
               style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Undo', style: TextStyle(color: AppColors.amber)),
+            child: Text('Undo', style: TextStyle(color: AppColors.amber)),
           ),
         ],
       ),
@@ -264,11 +264,11 @@ class _ScoringBodyState extends State<_ScoringBody> {
         context: context,
         builder: (ctx) => AlertDialog(
           backgroundColor: AppColors.surface,
-          title: const Text(
+          title: Text(
             'Go live?',
             style: TextStyle(color: AppColors.textPrimary),
           ),
-          content: const Text(
+          content: Text(
             'Turn on live sharing so friends can watch this match ball by ball '
             'on their phones. Needs internet; scoring keeps working offline.',
             style: TextStyle(color: AppColors.textSecondary),
@@ -276,7 +276,7 @@ class _ScoringBodyState extends State<_ScoringBody> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text(
+              child: Text(
                 'Not now',
                 style: TextStyle(color: AppColors.textSecondary),
               ),
@@ -284,10 +284,10 @@ class _ScoringBodyState extends State<_ScoringBody> {
             ElevatedButton(
               onPressed: () => Navigator.pop(ctx, true),
               style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
-              child: const Text(
+              child: Text(
                 'Go live',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: AppColors.onAccent,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -335,7 +335,7 @@ class _ScoringBodyState extends State<_ScoringBody> {
           children: [
             const LiveBadge(),
             const SizedBox(height: 14),
-            const Text(
+            Text(
               'Share the live score',
               style: TextStyle(
                 color: AppColors.textPrimary,
@@ -344,7 +344,7 @@ class _ScoringBodyState extends State<_ScoringBody> {
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
+            Text(
               'Anyone with the link or code can watch ball by ball',
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
@@ -352,7 +352,7 @@ class _ScoringBodyState extends State<_ScoringBody> {
             const SizedBox(height: 16),
             Text(
               s.matchCode,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.green,
                 fontSize: 40,
                 fontWeight: FontWeight.w900,
@@ -363,7 +363,7 @@ class _ScoringBodyState extends State<_ScoringBody> {
             SelectableText(
               link,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.blue, fontSize: 13),
+              style: TextStyle(color: AppColors.blue, fontSize: 13),
             ),
             const SizedBox(height: 20),
             Row(
@@ -380,16 +380,13 @@ class _ScoringBodyState extends State<_ScoringBody> {
                           const SnackBar(content: Text('Link copied')),
                         );
                       },
-                      icon: const Icon(
-                        Icons.copy,
-                        color: AppColors.textPrimary,
-                      ),
-                      label: const Text(
+                      icon: Icon(Icons.copy, color: AppColors.textPrimary),
+                      label: Text(
                         'Copy link',
                         style: TextStyle(color: AppColors.textPrimary),
                       ),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AppColors.border),
+                        side: BorderSide(color: AppColors.border),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -406,11 +403,11 @@ class _ScoringBodyState extends State<_ScoringBody> {
                         Navigator.pop(ctx);
                         SharePlus.instance.share(ShareParams(text: text));
                       },
-                      icon: const Icon(Icons.share, color: Colors.black),
-                      label: const Text(
+                      icon: Icon(Icons.share, color: AppColors.onAccent),
+                      label: Text(
                         'Share link',
                         style: TextStyle(
-                          color: Colors.black,
+                          color: AppColors.onAccent,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -446,25 +443,25 @@ class _ScoringBodyState extends State<_ScoringBody> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text(
+        title: Text(
           'Leave match?',
           style: TextStyle(color: AppColors.textPrimary),
         ),
-        content: const Text(
+        content: Text(
           'The match is saved on this phone — you can resume it from Home.',
           style: TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, 'abandon'),
-            child: const Text(
+            child: Text(
               'Abandon match',
               style: TextStyle(color: AppColors.red),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, 'leave'),
-            child: const Text(
+            child: Text(
               'Save & leave',
               style: TextStyle(color: AppColors.green),
             ),
@@ -490,25 +487,19 @@ class _ScoringBodyState extends State<_ScoringBody> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text(
-          title,
-          style: const TextStyle(color: AppColors.textPrimary),
-        ),
-        content: Text(
-          body,
-          style: const TextStyle(color: AppColors.textSecondary),
-        ),
+        title: Text(title, style: TextStyle(color: AppColors.textPrimary)),
+        content: Text(body, style: TextStyle(color: AppColors.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text(
+            child: Text(
               'Cancel',
               style: TextStyle(color: AppColors.textSecondary),
             ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text(action, style: const TextStyle(color: AppColors.red)),
+            child: Text(action, style: TextStyle(color: AppColors.red)),
           ),
         ],
       ),
@@ -627,7 +618,7 @@ class _TopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
@@ -635,14 +626,14 @@ class _TopBar extends StatelessWidget {
         children: [
           IconButton(
             onPressed: onClose,
-            icon: const Icon(Icons.close, color: AppColors.textSecondary),
+            icon: Icon(Icons.close, color: AppColors.textSecondary),
           ),
           Expanded(
             child: Text(
               '${state.teamOneName} vs ${state.teamTwoName}',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textPrimary,
                 fontWeight: FontWeight.w600,
                 fontSize: 15,
@@ -658,10 +649,10 @@ class _TopBar extends StatelessWidget {
             key: const ValueKey('share-live'),
             onPressed: onShare,
             tooltip: 'Share live score',
-            icon: const Icon(Icons.share, color: AppColors.green),
+            icon: Icon(Icons.share, color: AppColors.green),
           ),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, color: AppColors.textSecondary),
+            icon: Icon(Icons.more_vert, color: AppColors.textSecondary),
             color: AppColors.surface,
             onSelected: (v) {
               if (v == 'share') onShare();
@@ -669,14 +660,14 @@ class _TopBar extends StatelessWidget {
               if (v == 'end') onEndInnings();
             },
             itemBuilder: (_) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'share',
                 child: Text(
                   'Share live link',
                   style: TextStyle(color: AppColors.textPrimary),
                 ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'scorecard',
                 child: Text(
                   'Full scorecard',
@@ -684,7 +675,7 @@ class _TopBar extends StatelessWidget {
                 ),
               ),
               if (state.canScore && state.ballLog.isNotEmpty)
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'end',
                   child: Text(
                     'End innings',
@@ -717,7 +708,7 @@ class _PendingBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(top: BorderSide(color: AppColors.border)),
       ),
@@ -729,7 +720,7 @@ class _PendingBar extends StatelessWidget {
             Text(
               text,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.amber,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
@@ -744,12 +735,12 @@ class _PendingBar extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: onUndo,
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AppColors.border),
+                        side: BorderSide(color: AppColors.border),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         '↩ Undo',
                         style: TextStyle(color: AppColors.textSecondary),
                       ),
@@ -771,8 +762,8 @@ class _PendingBar extends StatelessWidget {
                       ),
                       child: Text(
                         button,
-                        style: const TextStyle(
-                          color: Colors.black,
+                        style: TextStyle(
+                          color: AppColors.onAccent,
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
                         ),
@@ -816,7 +807,7 @@ class _ScoringPad extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(9, 10, 9, 10),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(top: BorderSide(color: AppColors.border)),
       ),
@@ -893,11 +884,13 @@ class _ScoringPad extends StatelessWidget {
   Widget _btn(
     String label,
     VoidCallback? onTap, {
-    Color bg = AppColors.background,
-    Color fg = AppColors.textPrimary,
+    Color? bg,
+    Color? fg,
     bool bold = false,
     String? sub,
   }) {
+    bg ??= AppColors.background;
+    fg ??= AppColors.textPrimary;
     final enabled = onTap != null;
     return Expanded(
       child: Padding(
